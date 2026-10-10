@@ -9,4 +9,7 @@ import { RouterOutlet } from '@angular/router';
 })
 export class App {
   protected readonly title = signal('agency');
+  handleClick(): void {
+    this.title.set('Tapir Agency');
+  }
 }
