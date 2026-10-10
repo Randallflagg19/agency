@@ -2,8 +2,53 @@
 
 @import 'tailwindcss';
 
+:root {
+  --paper-color: #e7dfce;
+  --paper-ink: #38352e;
+  --paper-stain-opacity: 0.07;
+  --paper-wear-opacity: 0.035;
+}
+
 body {
   margin: 0;
-  background-color: #18181b;
-  color: #e4e4e7;
+  min-height: 100dvh;
+  background-color: var(--paper-color);
+  /* Soft wear above scattered stains and a warm paper base. */
+  background-image:
+    linear-gradient(
+      113deg,
+      transparent 12%,
+      rgb(112 91 59 / var(--paper-wear-opacity)) 32%,
+      transparent 48%,
+      rgb(255 251 235 / 0.09) 71%,
+      transparent 92%
+    ),
+    radial-gradient(
+      ellipse at 40% 45%,
+      rgb(126 101 65 / var(--paper-stain-opacity)),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse at 60% 55%,
+      rgb(126 101 65 / var(--paper-wear-opacity)),
+      transparent 60%
+    ),
+    radial-gradient(ellipse at 50% 50%, rgb(255 251 235 / 0.23), transparent 70%);
+  /* Different tile sizes keep patches soft on both short and long pages. */
+  background-size:
+    100% 100%,
+    1100px 830px,
+    730px 970px,
+    1400px 1050px;
+  background-position:
+    0 0,
+    -230px -170px,
+    310px 190px,
+    -170px -260px;
+  color: var(--paper-ink);
+}
+
+/* Keep the starter template's light paragraph text readable on paper. */
+app-root main p {
+  color: var(--paper-ink);
 }
