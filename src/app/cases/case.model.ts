@@ -35,6 +35,8 @@ export interface IncidentCase {
   readonly assigneeId: string | null;
   /** Дата и время регистрации в формате ISO 8601 с часовым поясом. */
   readonly registeredAt: string;
+  /** Основное изображение дела для списка и карточки; null, если изображения нет. */
+  readonly coverImageUrl: string | null;
   readonly tags: readonly string[];
   readonly conclusion: string | null;
   readonly relatedCaseIds: readonly string[];

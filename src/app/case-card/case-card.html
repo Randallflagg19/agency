@@ -3,6 +3,7 @@
   @if (selected()) {
     <h2>{{ incident().title }}</h2>
     <p>{{ incident().description }}</p>
+  } @else {
+    <button type="button" (click)="selectCase()">Выбрать дело</button>
   }
-  <button type="button" (click)="selectCase()">Выбрать дело</button>
 </article>
