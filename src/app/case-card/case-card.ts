@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core';
+import type { IncidentCase } from '../cases/case.model';
 
 @Component({
   imports: [],
@@ -6,6 +7,5 @@ import { Component, input } from '@angular/core';
   templateUrl: './case-card.html',
 })
 export class CaseCard {
-  readonly caseNumber = input.required<string>();
-  readonly caseTitle = input.required<string>();
+  readonly incident = input.required<IncidentCase>();
 }

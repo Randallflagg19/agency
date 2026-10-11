@@ -1,5 +1,5 @@
 <main>
   <h1>{{ title().toUpperCase() }}</h1>
   <button type="button" (click)="handleClick()">Показать название бюро</button>
-  <app-case-card [caseTitle]="caseName" [caseNumber]="caseNumber" />
+  <app-case-card [incident]="caseData" />
 </main>
