@@ -1,5 +1,16 @@
 <main>
   <h1>Бюро аномальных происшествий</h1>
+
+  <label for="caseSearch">Поиск по названию</label>
+  <input
+    #searchField
+    type="search"
+    placeholder="Поиск по названию"
+    id="caseSearch"
+    [value]="searchQuery()"
+    (input)="handleSearchInput(searchField.value)"
+  />
+  <div>Запрос: {{ searchQuery() }}</div>
   <ul class="case-list" aria-label="Дела бюро">
     @for (case of cases; track case.id) {
       <li>

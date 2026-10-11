@@ -16,6 +16,11 @@ export class App {
     this.selectedCaseId.set(caseId);
   }
 
+  protected readonly searchQuery = signal('');
+  handleSearchInput(value: string): void {
+    this.searchQuery.set(value);
+  }
+
   protected readonly cases = MOCK_CASES;
 
   protected readonly selectedCase: Signal<IncidentCase | null> = computed(() => {
