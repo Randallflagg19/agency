@@ -16,8 +16,10 @@
 
 .case-card--selected {
   border-color: #52613d;
-  box-shadow: inset 0 0 0 1px #52613d;
-  background-color: rgb(243 240 217 / 0.45);
+  box-shadow:
+    inset 0 0 0 1px #52613d,
+    inset 0 0 0 3px rgb(255 252 239 / 0.5);
+  background-color: #e9e0cc;
 }
 
 .case-card__thumbnail {
