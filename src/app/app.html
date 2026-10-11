@@ -11,4 +11,9 @@
       </li>
     }
   </ul>
+  @if (selectedCase(); as incident) {
+    <div>
+      <h1>{{ incident.title }}</h1>
+    </div>
+  }
 </main>

@@ -1,7 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed, type Signal } from '@angular/core';
 import { CaseCard } from './case-card/case-card';
-import type { IncidentCase } from './cases/case.model';
 import { MOCK_CASES } from './cases/cases.mock';
+import type { IncidentCase } from './cases/case.model';
 
 @Component({
   selector: 'app-root',
@@ -17,4 +17,8 @@ export class App {
   }
 
   protected readonly cases = MOCK_CASES;
+
+  protected readonly selectedCase: Signal<IncidentCase | null> = computed(() => {
+    return this.cases.find((item) => item.id === this.selectedCaseId()) ?? null;
+  });
 }
