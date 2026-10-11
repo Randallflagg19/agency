@@ -12,8 +12,40 @@
     }
   </ul>
   @if (selectedCase(); as incident) {
-    <div>
-      <h1>{{ incident.title }}</h1>
-    </div>
+    @if (selectedCase(); as incident) {
+      <article class="case-details">
+        <header class="case-details__header">
+          <p class="case-details__number">CASE №{{ incident.number }}</p>
+          <h2 class="case-details__title">{{ incident.title }}</h2>
+        </header>
+
+        <div class="case-details__content">
+          <div class="case-details__info">
+            <p class="case-details__description">
+              {{ incident.description }}
+            </p>
+
+            @if (incident.location; as location) {
+              <div class="case-details__location">
+                @if (location.region) {
+                  <p>{{ location.region }}</p>
+                }
+                <p>{{ location.description }}</p>
+              </div>
+            }
+
+            @if (incident.threatLevel !== null) {
+              <p class="case-details__threat">Уровень угрозы: {{ incident.threatLevel }} / 5</p>
+            }
+          </div>
+
+          @if (incident.coverImageUrl; as imageUrl) {
+            <figure class="case-details__photo">
+              <img [src]="imageUrl" [alt]="incident.title" />
+            </figure>
+          }
+        </div>
+      </article>
+    }
   }
 </main>
