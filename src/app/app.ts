@@ -21,6 +21,12 @@ export class App {
     this.searchQuery.set(value);
   }
 
+  protected readonly filteredCases = computed(() => {
+    const query = this.searchQuery().trim().toLowerCase();
+    if (query === '') return this.cases;
+    return this.cases.filter((item) => item.title.toLowerCase().includes(query));
+  });
+
   protected readonly cases = MOCK_CASES;
 
   protected readonly selectedCase: Signal<IncidentCase | null> = computed(() => {

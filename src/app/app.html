@@ -12,7 +12,7 @@
   />
   <div>Запрос: {{ searchQuery() }}</div>
   <ul class="case-list" aria-label="Дела бюро">
-    @for (case of cases; track case.id) {
+    @for (case of filteredCases(); track case.id) {
       <li>
         <app-case-card
           [incident]="case"
