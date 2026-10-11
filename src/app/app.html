@@ -20,6 +20,8 @@
           [selected]="selectedCaseId() === case.id"
         />
       </li>
+    } @empty {
+      <li>Дела не найдены</li>
     }
   </ul>
   @if (selectedCase(); as incident) {
