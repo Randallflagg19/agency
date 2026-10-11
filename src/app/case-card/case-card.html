@@ -1,5 +1,8 @@
 <article>
   <p>CASE №{{ incident().number }}</p>
-  <h2>{{ incident().title }}</h2>
-  <p>{{ incident().description }}</p>
+  @if (selected()) {
+    <h2>{{ incident().title }}</h2>
+    <p>{{ incident().description }}</p>
+  }
+  <button type="button" (click)="selectCase()">Выбрать дело</button>
 </article>

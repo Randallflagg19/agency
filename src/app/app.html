@@ -1,5 +1,10 @@
 <main>
-  <h1>{{ title().toUpperCase() }}</h1>
-  <button type="button" (click)="handleClick()">Показать название бюро</button>
-  <app-case-card [incident]="caseData" />
+  <h1>Бюро аномальных происшествий</h1>
+  @for (case of cases; track case.id) {
+    <app-case-card
+      [incident]="case"
+      (caseSelected)="handleCaseSelected($event)"
+      [selected]="selectedCaseId() === case.id"
+    />
+  }
 </main>
