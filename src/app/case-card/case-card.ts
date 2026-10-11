@@ -1,10 +1,12 @@
 import { Component, input, output } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import type { IncidentCase } from '../cases/case.model';
 
 @Component({
-  imports: [],
+  imports: [NgOptimizedImage],
   selector: 'app-case-card',
   templateUrl: './case-card.html',
+  styleUrl: './case-card.css',
 })
 export class CaseCard {
   readonly incident = input.required<IncidentCase>();

@@ -1,9 +1,22 @@
-<article>
-  <p>CASE №{{ incident().number }}</p>
-  @if (selected()) {
+<article
+  class="case-card"
+  [class.case-card--selected]="selected()"
+  [attr.aria-current]="selected() ? 'true' : null"
+>
+  <div class="case-card__thumbnail">
+    @if (incident().coverImageUrl; as coverImageUrl) {
+      <img [ngSrc]="coverImageUrl" width="88" height="88" alt="" />
+    }
+  </div>
+
+  <div class="case-card__content">
+    <p class="case-card__number">CASE №{{ incident().number }}</p>
     <h2>{{ incident().title }}</h2>
-    <p>{{ incident().description }}</p>
-  } @else {
-    <button type="button" (click)="selectCase()">Выбрать дело</button>
-  }
+
+    <div class="case-card__actions">
+      @if (!selected()) {
+        <button type="button" (click)="selectCase()">Выбрать дело</button>
+      }
+    </div>
+  </div>
 </article>

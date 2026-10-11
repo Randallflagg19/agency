@@ -1,10 +1,14 @@
 <main>
   <h1>Бюро аномальных происшествий</h1>
-  @for (case of cases; track case.id) {
-    <app-case-card
-      [incident]="case"
-      (caseSelected)="handleCaseSelected($event)"
-      [selected]="selectedCaseId() === case.id"
-    />
-  }
+  <ul class="case-list" aria-label="Дела бюро">
+    @for (case of cases; track case.id) {
+      <li>
+        <app-case-card
+          [incident]="case"
+          (caseSelected)="handleCaseSelected($event)"
+          [selected]="selectedCaseId() === case.id"
+        />
+      </li>
+    }
+  </ul>
 </main>
