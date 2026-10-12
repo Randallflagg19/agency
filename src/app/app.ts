@@ -2,12 +2,13 @@ import { Component, signal, computed, type Signal } from '@angular/core';
 import { CaseCard } from './case-card/case-card';
 import { MOCK_CASES } from './cases/cases.mock';
 import type { IncidentCase } from './cases/case.model';
+import { CaseDetails } from './case-details/case-details';
 
 @Component({
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
-  imports: [CaseCard],
+  imports: [CaseCard, CaseDetails],
 })
 export class App {
   protected readonly selectedCaseId = signal<string | null>(null);
@@ -17,6 +18,7 @@ export class App {
   }
 
   protected readonly searchQuery = signal('');
+
   handleSearchInput(value: string): void {
     this.searchQuery.set(value);
   }

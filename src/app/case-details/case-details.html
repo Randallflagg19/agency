@@ -1,0 +1,33 @@
+<article class="case-details">
+  <header class="case-details__header">
+    <p class="case-details__number">CASE №{{ selectedCase().number }}</p>
+    <h2 class="case-details__title">{{ selectedCase().title }}</h2>
+  </header>
+
+  <div class="case-details__content">
+    <div class="case-details__info">
+      <p class="case-details__description">
+        {{ selectedCase().description }}
+      </p>
+
+      @if (selectedCase().location; as location) {
+        <div class="case-details__location">
+          @if (location.region) {
+            <p>{{ location.region }}</p>
+          }
+          <p>{{ location.description }}</p>
+        </div>
+      }
+
+      @if (selectedCase().threatLevel !== null) {
+        <p class="case-details__threat">Уровень угрозы: {{ selectedCase().threatLevel }} / 5</p>
+      }
+    </div>
+
+    @if (selectedCase().coverImageUrl; as imageUrl) {
+      <figure class="case-details__photo">
+        <img [src]="imageUrl" [alt]="selectedCase().title" />
+      </figure>
+    }
+  </div>
+</article>
