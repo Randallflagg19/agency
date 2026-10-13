@@ -5,7 +5,7 @@
 
 main {
   display: grid;
-  grid-template-columns: clamp(360px, 32vw, 460px) minmax(0, 1fr);
+  grid-template-columns: clamp(430px, 39vw, 600px) minmax(0, 1fr);
   grid-template-areas:
     'heading heading'
     'list details';
@@ -23,7 +23,7 @@ main > h1 {
   display: grid;
   gap: 8px;
   width: 100%;
-  max-width: 460px;
+  max-width: 600px;
   margin: 0;
   padding: 0;
   list-style: none;

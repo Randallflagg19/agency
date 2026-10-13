@@ -1,6 +1,7 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import type { IncidentCase } from '../cases/case.model';
+import { createCaseCardViewModel } from './case-card.presenter';
 
 @Component({
   imports: [NgOptimizedImage],
@@ -13,9 +14,11 @@ export class CaseCard {
   readonly caseSelected = output<string>();
   readonly selected = input(false);
 
-  selectCase(): void {
-    const incidentId = this.incident().id;
+  protected readonly viewModel = computed(() =>
+    createCaseCardViewModel(this.incident()),
+  );
 
-    this.caseSelected.emit(incidentId);
+  selectCase(): void {
+    this.caseSelected.emit(this.viewModel().id);
   }
 }

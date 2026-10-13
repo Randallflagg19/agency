@@ -1,22 +1,53 @@
-<article
-  class="case-card"
-  [class.case-card--selected]="selected()"
-  [attr.aria-current]="selected() ? 'true' : null"
->
+@let card = viewModel();
+
+<article class="case-card" [class.case-card--selected]="selected()">
   <div class="case-card__thumbnail">
-    @if (incident().coverImageUrl; as coverImageUrl) {
-      <img [ngSrc]="coverImageUrl" width="88" height="88" alt="" />
+    @if (card.coverImageUrl; as coverImageUrl) {
+      <img [ngSrc]="coverImageUrl" width="100" height="100" alt="" />
     }
   </div>
 
   <div class="case-card__content">
-    <p class="case-card__number">CASE №{{ incident().number }}</p>
-    <h2>{{ incident().title }}</h2>
+    <div class="case-card__topline">
+      <p class="case-card__number">CASE №{{ card.number }}</p>
 
-    <div class="case-card__actions">
-      @if (!selected()) {
-        <button type="button" (click)="selectCase()">Выбрать дело</button>
+      @if (card.threatLevel; as threatLevel) {
+        <p class="case-card__threat">
+          Угроза: <span>{{ threatLevel }}/5</span>
+        </p>
       }
     </div>
+
+    <h2>{{ card.title }}</h2>
+
+    <div class="case-card__tags" aria-label="Статус и категория дела">
+      <span class="case-card__tag" [class.case-card__tag--active]="card.isActive">
+        {{ card.statusLabel }}
+      </span>
+      <span class="case-card__tag">{{ card.categoryLabel }}</span>
+    </div>
+
+    <div class="case-card__footer">
+      @if (card.locationLabel; as location) {
+        <span class="case-card__location" [title]="location">
+          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+            <path
+              d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+            />
+          </svg>
+          {{ location }}
+        </span>
+      }
+
+      <time [attr.datetime]="card.registeredAt">{{ card.registrationDate }}</time>
+    </div>
   </div>
+
+  <button
+    class="case-card__select"
+    type="button"
+    [attr.aria-label]="'Выбрать дело «' + card.title + '»'"
+    [attr.aria-pressed]="selected()"
+    (click)="selectCase()"
+  ></button>
 </article>
