@@ -1,0 +1,9 @@
+<label for="caseSearch">Поиск по названию</label>
+<input
+  #searchField
+  type="search"
+  placeholder="Поиск по названию"
+  id="caseSearch"
+  [value]="query()"
+  (input)="emitQueryChange(searchField.value)"
+/>
