@@ -4,6 +4,7 @@ import { MOCK_CASES } from './cases/cases.mock';
 import type { IncidentCase } from './cases/case.model';
 import { CaseDetails } from './case-details/case-details';
 import { CaseFilters } from './case-filters/case-filters';
+import { CaseStatusFilter } from './case-filters/case-filters.model';
 
 @Component({
   selector: 'app-root',
@@ -29,9 +30,19 @@ export class App {
     this.searchQuery.set(value);
   }
 
+  protected readonly statusFilter = signal<CaseStatusFilter>('all');
+
+  updateCaseStatus(status: CaseStatusFilter): void {
+    this.statusFilter.set(status);
+  }
+
   protected readonly filteredCases = computed(() => {
+    const status = this.statusFilter();
+    const statusFilteredCases =
+      status === 'all' ? this.cases : this.cases.filter((item) => item.status === status);
+
     const query = this.searchQuery().trim().toLowerCase();
-    if (query === '') return this.cases;
-    return this.cases.filter((item) => item.title.toLowerCase().includes(query));
+    if (query === '') return statusFilteredCases;
+    return statusFilteredCases.filter((item) => item.title.toLowerCase().includes(query));
   });
 }

@@ -7,3 +7,16 @@
   [value]="query()"
   (input)="emitQueryChange(searchField.value)"
 />
+<label for="caseStatus">Статус</label>
+<select
+  #statusField
+  id="caseStatus"
+  [value]="status()"
+  (change)="emitStatusChange(statusField.value)"
+>
+  <option value="all">Все статусы</option>
+  <option value="new">Новое</option>
+  <option value="investigating">В работе</option>
+  <option value="suspended">Приостановлено</option>
+  <option value="closed">Закрыто</option>
+</select>

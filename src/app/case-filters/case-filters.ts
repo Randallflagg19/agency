@@ -1,4 +1,5 @@
 import { Component, input, output } from '@angular/core';
+import { CaseStatusFilter } from './case-filters.model';
 
 @Component({
   imports: [],
@@ -12,5 +13,12 @@ export class CaseFilters {
 
   emitQueryChange(value: string) {
     this.queryChanged.emit(value);
+  }
+
+  readonly status = input.required<CaseStatusFilter>();
+  readonly statusChanged = output<string>();
+
+  emitStatusChange(status: string) {
+    this.statusChanged.emit(status);
   }
 }

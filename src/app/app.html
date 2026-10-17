@@ -1,7 +1,12 @@
 <main>
   <h1>Бюро аномальных происшествий</h1>
 
-  <app-case-filters [query]="searchQuery()" (queryChanged)="updateSearchQuery($event)" />
+  <app-case-filters
+    [query]="searchQuery()"
+    (queryChanged)="updateSearchQuery($event)"
+    [status]="statusFilter()"
+    (statusChanged)="updateCaseStatus($event)"
+  />
 
   <ul class="case-list" aria-label="Дела бюро">
     @for (case of filteredCases(); track case.id) {
