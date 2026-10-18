@@ -1,0 +1,158 @@
+:host {
+  display: block;
+}
+
+.bureau-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 14px 40px;
+  border-bottom: 1px solid #b9ad96;
+  background:
+    radial-gradient(ellipse at 10% 0%, rgb(154 121 75 / 0.1), transparent 60%),
+    linear-gradient(100deg, rgb(255 251 235 / 0.38), rgb(236 225 202 / 0.22));
+  box-shadow: 0 2px 4px rgb(70 55 32 / 0.08);
+  color: var(--paper-ink);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.bureau-brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+}
+
+.bureau-emblem {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.bureau-heading {
+  min-width: 0;
+}
+
+h1 {
+  margin: 0 0 7px;
+  font-size: clamp(22px, 1.8vw, 30px);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.bureau-motto {
+  margin: 0;
+  font-size: 9px;
+  line-height: 1.7;
+  letter-spacing: 0.13em;
+}
+
+.bureau-motto span {
+  padding-inline: 4px;
+}
+
+.bureau-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  flex: none;
+}
+
+.bureau-note p {
+  margin: 0;
+  color: #655f53;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  transform: rotate(-4deg);
+}
+
+.bureau-stamp {
+  display: inline-block;
+  padding: 3px 9px;
+  border: 3px double #a14e43;
+  color: #a14e43;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+  transform: rotate(-8deg);
+}
+
+.bureau-profile {
+  display: flex;
+  align-items: center;
+  flex: none;
+  text-align: right;
+}
+
+.bureau-profile p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.bureau-profile__name {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.bureau-profile__role {
+  font-size: 11px;
+}
+
+button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #354238;
+}
+
+button:focus-visible {
+  outline: 2px solid #465235;
+  outline-offset: 2px;
+}
+
+@media (max-width: 1250px) {
+  .bureau-header {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .bureau-brand {
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 540px) {
+  .bureau-header {
+    padding: 16px;
+  }
+
+  .bureau-brand {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .bureau-emblem {
+    width: 56px;
+    height: 56px;
+  }
+
+  .bureau-note {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+  .bureau-profile {
+    margin-left: auto;
+  }
+}

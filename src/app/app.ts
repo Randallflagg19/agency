@@ -4,6 +4,7 @@ import { MOCK_CASES } from './cases/cases.mock';
 import type { IncidentCase } from './cases/case.model';
 import { CaseDetails } from './case-details/case-details';
 import { CaseFilters } from './case-filters/case-filters';
+import { BureauHeader } from './bureau-header/bureau-header';
 import type {
   CaseCategoryFilter,
   CaseStatusFilter,
@@ -14,7 +15,7 @@ import type {
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
-  imports: [CaseCard, CaseDetails, CaseFilters],
+  imports: [CaseCard, CaseDetails, CaseFilters, BureauHeader],
 })
 export class App {
   protected readonly cases = MOCK_CASES;
