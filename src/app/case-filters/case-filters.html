@@ -43,7 +43,7 @@
 <select
   #threatLevelField
   id="caseThreatLevel"
-  [value]="threatLevel()"
+  [value]="threatLevel() ?? 'unrated'"
   (change)="emitThreatLevelChange(threatLevelField.value)"
 >
   <option value="all">Любой</option>
@@ -52,6 +52,20 @@
   <option value="3">3</option>
   <option value="4">4</option>
   <option value="5">5</option>
+  <option value="unrated">Не оценён</option>
+</select>
+
+<label for="caseRegion">Регион</label>
+<select
+  #regionField
+  id="caseRegion"
+  [value]="region()"
+  (change)="emitRegionChange(regionField.value)"
+>
+  <option value="all">Все</option>
+  @for (region of regions(); track region) {
+    <option [value]="region">{{ region }}</option>
+  }
 </select>
 
 <button type="button" (click)="emitFiltersReset()">Сбросить фильтры</button>

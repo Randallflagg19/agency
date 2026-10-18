@@ -10,6 +10,9 @@
     (categoryChanged)="updateCategoryFilter($event)"
     [threatLevel]="threatLevelFilter()"
     (threatLevelChanged)="updateThreatLevelFilter($event)"
+    [regions]="regions"
+    [region]="regionFilter()"
+    (regionChanged)="updateRegionFilter($event)"
     (resetButtonClicked)="resetFilters()"
   />
 

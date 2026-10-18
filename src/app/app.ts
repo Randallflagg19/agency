@@ -18,6 +18,15 @@ import type {
 })
 export class App {
   protected readonly cases = MOCK_CASES;
+
+  protected readonly regions = [
+    ...new Set(
+      this.cases
+        .map((incident) => incident.location?.region)
+        .filter((region) => region !== null && region !== undefined),
+    ),
+  ];
+
   protected readonly selectedCaseId = signal<string | null>(null);
 
   handleCaseSelected(caseId: string) {
@@ -52,26 +61,36 @@ export class App {
     this.threatLevelFilter.set(threatLevel);
   }
 
+  protected readonly regionFilter = signal<string>('all');
+
+  updateRegionFilter(region: string): void {
+    this.regionFilter.set(region);
+  }
+
   resetFilters() {
     this.statusFilter.set('all');
     this.categoryFilter.set('all');
     this.threatLevelFilter.set('all');
-    console.log('231');
+    this.regionFilter.set('all');
   }
 
   protected readonly filteredCases = computed(() => {
     const status = this.statusFilter();
     const category = this.categoryFilter();
     const threatLevel = this.threatLevelFilter();
+    const region = this.regionFilter();
     const query = this.searchQuery().trim().toLowerCase();
 
     return this.cases.filter((item) => {
       const matchesStatus = status === 'all' || item.status === status;
       const matchesCategory = category === 'all' || item.category === category;
       const matchesThreatLevel = threatLevel === 'all' || item.threatLevel === threatLevel;
+      const matchesRegion = region === 'all' || item.location?.region === region;
       const matchesQuery = query === '' || item.title.toLowerCase().includes(query);
 
-      return matchesStatus && matchesCategory && matchesThreatLevel && matchesQuery;
+      return (
+        matchesStatus && matchesCategory && matchesThreatLevel && matchesQuery && matchesRegion
+      );
     });
   });
 }

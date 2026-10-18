@@ -34,14 +34,26 @@ export class CaseFilters {
   readonly threatLevelChanged = output<ThreatLevelFilter>();
 
   emitThreatLevelChange(threatLevel: string): void {
+    if (threatLevel === 'unrated') {
+      this.threatLevelChanged.emit(null);
+      return;
+    }
     const level = threatLevel === 'all' ? 'all' : (Number(threatLevel) as ThreatLevel);
     this.threatLevelChanged.emit(level);
+  }
+
+  readonly regions = input.required<string[]>();
+
+  readonly region = input.required<string>();
+  readonly regionChanged = output<string>();
+
+  emitRegionChange(region: string) {
+    this.regionChanged.emit(region);
   }
 
   readonly resetButtonClicked = output();
 
   emitFiltersReset() {
     this.resetButtonClicked.emit();
-    console.log('231');
   }
 }
