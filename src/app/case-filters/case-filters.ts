@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { CaseStatusFilter } from './case-filters.model';
+import type { CaseCategoryFilter, CaseStatusFilter } from './case-filters.model';
 
 @Component({
   imports: [],
@@ -16,9 +16,16 @@ export class CaseFilters {
   }
 
   readonly status = input.required<CaseStatusFilter>();
-  readonly statusChanged = output<string>();
+  readonly statusChanged = output<CaseStatusFilter>();
 
-  emitStatusChange(status: string) {
-    this.statusChanged.emit(status);
+  emitStatusChange(status: string): void {
+    this.statusChanged.emit(status as CaseStatusFilter);
+  }
+
+  readonly category = input.required<CaseCategoryFilter>();
+  readonly categoryChanged = output<CaseCategoryFilter>();
+
+  emitCategoryChange(category: string): void {
+    this.categoryChanged.emit(category as CaseCategoryFilter);
   }
 }

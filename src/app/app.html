@@ -6,6 +6,8 @@
     (queryChanged)="updateSearchQuery($event)"
     [status]="statusFilter()"
     (statusChanged)="updateCaseStatus($event)"
+    [category]="categoryFilter()"
+    (categoryChanged)="updateCaseCategory($event)"
   />
 
   <ul class="case-list" aria-label="Дела бюро">

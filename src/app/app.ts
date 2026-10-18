@@ -4,7 +4,7 @@ import { MOCK_CASES } from './cases/cases.mock';
 import type { IncidentCase } from './cases/case.model';
 import { CaseDetails } from './case-details/case-details';
 import { CaseFilters } from './case-filters/case-filters';
-import { CaseStatusFilter } from './case-filters/case-filters.model';
+import { CaseCategoryFilter, CaseStatusFilter } from './case-filters/case-filters.model';
 
 @Component({
   selector: 'app-root',
@@ -36,13 +36,27 @@ export class App {
     this.statusFilter.set(status);
   }
 
+  protected readonly categoryFilter = signal<CaseCategoryFilter>('all');
+
+  updateCaseCategory(category: CaseCategoryFilter): void {
+    this.categoryFilter.set(category);
+  }
+
   protected readonly filteredCases = computed(() => {
     const status = this.statusFilter();
     const statusFilteredCases =
       status === 'all' ? this.cases : this.cases.filter((item) => item.status === status);
 
+    const category = this.categoryFilter();
+    const statusFilteredCategorisedCases =
+      category === 'all'
+        ? statusFilteredCases
+        : statusFilteredCases.filter((item) => item.category === category);
+
     const query = this.searchQuery().trim().toLowerCase();
-    if (query === '') return statusFilteredCases;
-    return statusFilteredCases.filter((item) => item.title.toLowerCase().includes(query));
+    if (query === '') return statusFilteredCategorisedCases;
+    return statusFilteredCategorisedCases.filter((item) =>
+      item.title.toLowerCase().includes(query),
+    );
   });
 }
