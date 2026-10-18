@@ -3,7 +3,7 @@
 <article class="case-card" [class.case-card--selected]="selected()">
   <div class="case-card__thumbnail">
     @if (card.coverImageUrl; as coverImageUrl) {
-      <img [ngSrc]="coverImageUrl" width="100" height="100" alt="" />
+      <img [ngSrc]="coverImageUrl" fill alt="" />
     }
   </div>
 

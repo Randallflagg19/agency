@@ -24,6 +24,7 @@
 }
 
 .case-card__thumbnail {
+  position: relative;
   width: 100px;
   height: 100px;
   background-color: #d5ccba;
