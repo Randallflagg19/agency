@@ -5,9 +5,12 @@
     [query]="searchQuery()"
     (queryChanged)="updateSearchQuery($event)"
     [status]="statusFilter()"
-    (statusChanged)="updateCaseStatus($event)"
+    (statusChanged)="updateStatusFilter($event)"
     [category]="categoryFilter()"
-    (categoryChanged)="updateCaseCategory($event)"
+    (categoryChanged)="updateCategoryFilter($event)"
+    [threatLevel]="threatLevelFilter()"
+    (threatLevelChanged)="updateThreatLevelFilter($event)"
+    (resetButtonClicked)="resetFilters()"
   />
 
   <ul class="case-list" aria-label="Дела бюро">

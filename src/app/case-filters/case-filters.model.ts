@@ -1,4 +1,5 @@
-import { CaseCategory, CaseStatus } from '../cases/case.model';
+import type { CaseCategory, CaseStatus, ThreatLevel } from '../cases/case.model';
 
 export type CaseStatusFilter = CaseStatus | 'all';
 export type CaseCategoryFilter = CaseCategory | 'all';
+export type ThreatLevelFilter = ThreatLevel | 'all';

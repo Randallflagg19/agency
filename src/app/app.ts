@@ -4,7 +4,11 @@ import { MOCK_CASES } from './cases/cases.mock';
 import type { IncidentCase } from './cases/case.model';
 import { CaseDetails } from './case-details/case-details';
 import { CaseFilters } from './case-filters/case-filters';
-import { CaseCategoryFilter, CaseStatusFilter } from './case-filters/case-filters.model';
+import type {
+  CaseCategoryFilter,
+  CaseStatusFilter,
+  ThreatLevelFilter,
+} from './case-filters/case-filters.model';
 
 @Component({
   selector: 'app-root',
@@ -32,31 +36,42 @@ export class App {
 
   protected readonly statusFilter = signal<CaseStatusFilter>('all');
 
-  updateCaseStatus(status: CaseStatusFilter): void {
+  updateStatusFilter(status: CaseStatusFilter): void {
     this.statusFilter.set(status);
   }
 
   protected readonly categoryFilter = signal<CaseCategoryFilter>('all');
 
-  updateCaseCategory(category: CaseCategoryFilter): void {
+  updateCategoryFilter(category: CaseCategoryFilter): void {
     this.categoryFilter.set(category);
+  }
+
+  protected readonly threatLevelFilter = signal<ThreatLevelFilter>('all');
+
+  updateThreatLevelFilter(threatLevel: ThreatLevelFilter): void {
+    this.threatLevelFilter.set(threatLevel);
+  }
+
+  resetFilters() {
+    this.statusFilter.set('all');
+    this.categoryFilter.set('all');
+    this.threatLevelFilter.set('all');
+    console.log('231');
   }
 
   protected readonly filteredCases = computed(() => {
     const status = this.statusFilter();
-    const statusFilteredCases =
-      status === 'all' ? this.cases : this.cases.filter((item) => item.status === status);
-
     const category = this.categoryFilter();
-    const statusFilteredCategorisedCases =
-      category === 'all'
-        ? statusFilteredCases
-        : statusFilteredCases.filter((item) => item.category === category);
-
+    const threatLevel = this.threatLevelFilter();
     const query = this.searchQuery().trim().toLowerCase();
-    if (query === '') return statusFilteredCategorisedCases;
-    return statusFilteredCategorisedCases.filter((item) =>
-      item.title.toLowerCase().includes(query),
-    );
+
+    return this.cases.filter((item) => {
+      const matchesStatus = status === 'all' || item.status === status;
+      const matchesCategory = category === 'all' || item.category === category;
+      const matchesThreatLevel = threatLevel === 'all' || item.threatLevel === threatLevel;
+      const matchesQuery = query === '' || item.title.toLowerCase().includes(query);
+
+      return matchesStatus && matchesCategory && matchesThreatLevel && matchesQuery;
+    });
   });
 }
