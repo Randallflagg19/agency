@@ -173,6 +173,21 @@ h2 {
   }
 
   .case-card__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
     font-size: 11px;
+  }
+
+  .case-card__location {
+    align-items: flex-start;
+    overflow: visible;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .case-card__footer time {
+    margin-left: 0;
+    white-space: normal;
   }
 }

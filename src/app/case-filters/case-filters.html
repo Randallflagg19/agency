@@ -1,71 +1,93 @@
-<label for="caseSearch">Поиск по названию</label>
-<input
-  #searchField
-  type="search"
-  placeholder="Поиск по названию"
-  id="caseSearch"
-  [value]="query()"
-  (input)="emitQueryChange(searchField.value)"
-/>
+<div class="search-row">
+  <div class="search-box">
+    <svg
+      class="search-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.7"
+    >
+      <circle cx="10" cy="10" r="6.5" />
+      <path d="m15 15 5 5" />
+    </svg>
+    <label class="visually-hidden" for="caseSearch">Поиск по делам</label>
+    <input
+      #searchField
+      type="search"
+      placeholder="Поиск по делам"
+      id="caseSearch"
+      [value]="query()"
+      (input)="emitQueryChange(searchField.value)"
+    />
+  </div>
+  <button class="new-case" type="button"><span aria-hidden="true">+</span> Новое дело</button>
+</div>
 
-<label for="caseStatus">Статус</label>
-<select
-  #statusField
-  id="caseStatus"
-  [value]="status()"
-  (change)="emitStatusChange(statusField.value)"
->
-  <option value="all">Все статусы</option>
-  <option value="new">Новое</option>
-  <option value="investigating">В работе</option>
-  <option value="suspended">Приостановлено</option>
-  <option value="closed">Закрыто</option>
-</select>
-
-<label for="caseCategory">Категория</label>
-<select
-  #categoryField
-  id="caseCategory"
-  [value]="category()"
-  (change)="emitCategoryChange(categoryField.value)"
->
-  <option value="all">Все категории</option>
-  <option value="acoustic">Аудиальные явления</option>
-  <option value="visual">Визуальные явления</option>
-  <option value="telecommunication">Телекоммуникационные аномалии</option>
-  <option value="disappearance">Исчезновения</option>
-  <option value="spatial">Пространственные аномалии</option>
-  <option value="unknown">Неизвестное явление</option>
-  <option value="physical">Физические аномалии</option>
-</select>
-
-<label for="caseThreatLevel">Уровень угрозы</label>
-<select
-  #threatLevelField
-  id="caseThreatLevel"
-  [value]="threatLevel() ?? 'unrated'"
-  (change)="emitThreatLevelChange(threatLevelField.value)"
->
-  <option value="all">Любой</option>
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="unrated">Не оценён</option>
-</select>
-
-<label for="caseRegion">Регион</label>
-<select
-  #regionField
-  id="caseRegion"
-  [value]="region()"
-  (change)="emitRegionChange(regionField.value)"
->
-  <option value="all">Все</option>
-  @for (region of regions(); track region) {
-    <option [value]="region">{{ region }}</option>
-  }
-</select>
-
-<button type="button" (click)="emitFiltersReset()">Сбросить фильтры</button>
+<div class="filter-row">
+  <div class="filter-field">
+    <label for="caseStatus">Статус</label>
+    <select
+      #statusField
+      id="caseStatus"
+      [value]="status()"
+      (change)="emitStatusChange(statusField.value)"
+    >
+      <option value="all">Все статусы</option>
+      <option value="new">Новое</option>
+      <option value="investigating">В работе</option>
+      <option value="suspended">Приостановлено</option>
+      <option value="closed">Закрыто</option>
+    </select>
+  </div>
+  <div class="filter-field">
+    <label for="caseCategory">Категория</label>
+    <select
+      #categoryField
+      id="caseCategory"
+      [value]="category()"
+      (change)="emitCategoryChange(categoryField.value)"
+    >
+      <option value="all">Все категории</option>
+      <option value="acoustic">Аудиальные явления</option>
+      <option value="visual">Визуальные явления</option>
+      <option value="telecommunication">Телекоммуникационные аномалии</option>
+      <option value="disappearance">Исчезновения</option>
+      <option value="spatial">Пространственные аномалии</option>
+      <option value="unknown">Неизвестное явление</option>
+      <option value="physical">Физические аномалии</option>
+    </select>
+  </div>
+  <div class="filter-field">
+    <label for="caseThreatLevel">Уровень угрозы</label>
+    <select
+      #threatLevelField
+      id="caseThreatLevel"
+      [value]="threatLevel() ?? 'unrated'"
+      (change)="emitThreatLevelChange(threatLevelField.value)"
+    >
+      <option value="all">Любой</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="unrated">Не оценён</option>
+    </select>
+  </div>
+  <div class="filter-field">
+    <label for="caseRegion">Регион</label>
+    <select
+      #regionField
+      id="caseRegion"
+      [value]="region()"
+      (change)="emitRegionChange(regionField.value)"
+    >
+      <option value="all">Все</option>
+      @for (region of regions(); track region) {
+        <option [value]="region">{{ region }}</option>
+      }
+    </select>
+  </div>
+  <button class="reset-filters" type="button" (click)="emitFiltersReset()">Сбросить фильтры</button>
+</div>

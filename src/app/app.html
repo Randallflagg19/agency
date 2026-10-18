@@ -1,20 +1,27 @@
 <main>
   <h1>Бюро аномальных происшествий</h1>
 
-  <app-case-filters
-    [query]="searchQuery()"
-    (queryChanged)="updateSearchQuery($event)"
-    [status]="statusFilter()"
-    (statusChanged)="updateStatusFilter($event)"
-    [category]="categoryFilter()"
-    (categoryChanged)="updateCategoryFilter($event)"
-    [threatLevel]="threatLevelFilter()"
-    (threatLevelChanged)="updateThreatLevelFilter($event)"
-    [regions]="regions"
-    [region]="regionFilter()"
-    (regionChanged)="updateRegionFilter($event)"
-    (resetButtonClicked)="resetFilters()"
-  />
+  <section class="archive-toolbar" aria-labelledby="archive-title">
+    <div class="archive-summary">
+      <h2 id="archive-title">Архив дел</h2>
+      <p>Каталог зарегистрированных аномальных происшествий</p>
+      <p>Всего в архиве: {{ cases.length }} дел.</p>
+    </div>
+    <app-case-filters
+      [query]="searchQuery()"
+      (queryChanged)="updateSearchQuery($event)"
+      [status]="statusFilter()"
+      (statusChanged)="updateStatusFilter($event)"
+      [category]="categoryFilter()"
+      (categoryChanged)="updateCategoryFilter($event)"
+      [threatLevel]="threatLevelFilter()"
+      (threatLevelChanged)="updateThreatLevelFilter($event)"
+      [regions]="regions"
+      [region]="regionFilter()"
+      (regionChanged)="updateRegionFilter($event)"
+      (resetButtonClicked)="resetFilters()"
+    />
+  </section>
 
   <ul class="case-list" aria-label="Дела бюро">
     @for (case of filteredCases(); track case.id) {

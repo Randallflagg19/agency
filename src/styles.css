@@ -2,6 +2,10 @@
 
 @import 'tailwindcss';
 
+html {
+  scrollbar-gutter: stable;
+}
+
 :root {
   --paper-color: #e7dfce;
   --paper-ink: #38352e;

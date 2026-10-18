@@ -8,6 +8,7 @@ main {
   grid-template-columns: clamp(430px, 39vw, 600px) minmax(0, 1fr);
   grid-template-areas:
     'heading heading'
+    'toolbar toolbar'
     'list details';
   column-gap: 20px;
   align-items: start;
@@ -16,6 +17,38 @@ main {
 
 main > h1 {
   grid-area: heading;
+}
+
+.archive-toolbar {
+  grid-area: toolbar;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(0, 2fr);
+  gap: 24px;
+  padding: 12px 0 20px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgb(117 102 77 / 0.22);
+}
+
+.archive-summary h2 {
+  margin: 0 0 4px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(28px, 2.5vw, 36px);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.archive-summary p {
+  margin: 0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+@media (max-width: 1200px) {
+  .archive-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
 }
 
 .case-list {
@@ -50,6 +83,7 @@ main > h1 {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       'heading'
+      'toolbar'
       'list'
       'details';
   }
