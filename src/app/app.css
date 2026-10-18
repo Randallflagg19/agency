@@ -39,6 +39,7 @@ main > h1 {
 
 .archive-summary p {
   margin: 0;
+  color: #655f53;
   font-family: 'Courier New', Courier, monospace;
   font-size: 15px;
   line-height: 1.5;
