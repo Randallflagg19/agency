@@ -7,8 +7,8 @@ html {
 }
 
 :root {
-  --paper-color: #e7dfce;
-  --paper-ink: #38352e;
+  --paper-color: #eae2d1;
+  --paper-ink: #2e2b24;
   --paper-stain-opacity: 0.07;
   --paper-wear-opacity: 0.035;
 }
@@ -19,6 +19,7 @@ body {
   background-color: var(--paper-color);
   /* Soft wear above scattered stains and a warm paper base. */
   background-image:
+    url('/assets/paper-grain.svg'),
     linear-gradient(
       113deg,
       transparent 12%,
@@ -40,11 +41,13 @@ body {
     radial-gradient(ellipse at 50% 50%, rgb(255 251 235 / 0.23), transparent 70%);
   /* Different tile sizes keep patches soft on both short and long pages. */
   background-size:
+    256px 256px,
     100% 100%,
     1100px 830px,
     730px 970px,
     1400px 1050px;
   background-position:
+    0 0,
     0 0,
     -230px -170px,
     310px 190px,

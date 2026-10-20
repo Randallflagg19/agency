@@ -21,13 +21,15 @@
     />
   </section>
 
+  <p>{{ status() }}</p>
+
   <ul class="case-list" aria-label="Дела бюро">
     @for (case of filteredCases(); track case.id) {
       <li>
         <app-case-card
           [incident]="case"
           (caseSelected)="handleCaseSelected($event)"
-          [selected]="selectedCaseId() === case.id"
+          [selected]="routeCaseId() === case.id"
         />
       </li>
     } @empty {

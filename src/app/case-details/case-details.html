@@ -1,7 +1,10 @@
 <article class="case-details">
   <header class="case-details__header">
-    <p class="case-details__number">CASE №{{ selectedCase().number }}</p>
-    <h2 class="case-details__title">{{ selectedCase().title }}</h2>
+    <div class="case-details__heading">
+      <p class="case-details__number">CASE №{{ selectedCase().number }}</p>
+      <h2 class="case-details__title">{{ selectedCase().title }}</h2>
+    </div>
+    <app-classified-stamp />
   </header>
 
   <div class="case-details__content">
@@ -10,23 +13,73 @@
         {{ selectedCase().description }}
       </p>
 
-      @if (selectedCase().location; as location) {
-        <div class="case-details__location">
-          @if (location.region) {
-            <p>{{ location.region }}</p>
-          }
-          <p>{{ location.description }}</p>
+      <dl class="case-details__metadata">
+        @if (selectedCase().location; as location) {
+          <div class="case-details__row">
+            <dt>Местоположение</dt>
+            <dd>
+              @if (location.region) {
+                <span>{{ location.region }}</span>
+              }
+              <span>{{ location.description }}</span>
+              @if (location.address) {
+                <span>{{ location.address }}</span>
+              }
+            </dd>
+          </div>
+        }
+        <div class="case-details__row">
+          <dt>Статус</dt>
+          <dd>
+            <span class="case-details__tag" [class.case-details__tag--active]="metadata().isActive">
+              {{ metadata().statusLabel }}
+            </span>
+          </dd>
         </div>
-      }
-
-      @if (selectedCase().threatLevel !== null) {
-        <p class="case-details__threat">Уровень угрозы: {{ selectedCase().threatLevel }} / 5</p>
-      }
+        <div class="case-details__row">
+          <dt>Категория</dt>
+          <dd>
+            <span class="case-details__tag">{{ metadata().categoryLabel }}</span>
+          </dd>
+        </div>
+        @if (selectedCase().threatLevel; as level) {
+          <div class="case-details__row">
+            <dt>Уровень угрозы</dt>
+            <dd class="case-details__threat">
+              <span class="case-details__dots" aria-hidden="true">
+                @for (step of threatSteps; track step) {
+                  <span
+                    class="case-details__dot"
+                    [class.case-details__dot--active]="step <= level"
+                  ></span>
+                }
+              </span>
+              <strong>{{ level }} / 5</strong>
+            </dd>
+          </div>
+        }
+        <div class="case-details__row">
+          <dt>Дата регистрации</dt>
+          <dd>
+            <time [attr.datetime]="selectedCase().registeredAt">{{
+              metadata().registrationDate
+            }}</time>
+          </dd>
+        </div>
+      </dl>
     </div>
 
     @if (selectedCase().coverImageUrl; as imageUrl) {
       <figure class="case-details__photo">
-        <img [src]="imageUrl" [alt]="selectedCase().title" />
+        <div class="case-details__photo-image">
+          <img
+            [ngSrc]="imageUrl"
+            fill
+            [alt]="selectedCase().title"
+            sizes="(max-width: 540px) 80vw, 25vw"
+          />
+        </div>
+        <figcaption>Материалы дела №{{ selectedCase().number }}</figcaption>
       </figure>
     }
   </div>

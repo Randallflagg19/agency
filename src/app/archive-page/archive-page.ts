@@ -1,4 +1,4 @@
-import { Component, computed, linkedSignal, type Signal, signal, inject } from '@angular/core';
+import { Component, computed, type Signal, signal, inject } from '@angular/core';
 import type { IncidentCase } from '../cases/case.model';
 import { MOCK_CASES } from '../cases/cases.mock';
 import { CaseFilters } from '../case-filters/case-filters';
@@ -29,11 +29,13 @@ export class ArchivePage {
     initialValue: this.route.snapshot.paramMap,
   });
 
+  private readonly queryParams = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
+
   protected readonly routeCaseId = computed(() => this.routeParams().get('caseId'));
 
-  constructor() {
-    console.log(this.route.snapshot.paramMap.get('caseId'));
-  }
+  protected readonly status = computed(() => this.queryParams().get('status')) ?? 'all';
 
   protected readonly regions = [
     ...new Set(
@@ -107,14 +109,5 @@ export class ArchivePage {
         matchesStatus && matchesCategory && matchesThreatLevel && matchesQuery && matchesRegion
       );
     });
-  });
-
-  protected readonly selectedCaseId = linkedSignal<IncidentCase[], string | null>({
-    source: this.filteredCases,
-    computation: (items, previous) => {
-      const selectedId = previous?.value ?? null;
-      if (items.some((item) => item.id === selectedId)) return selectedId;
-      return null;
-    },
   });
 }

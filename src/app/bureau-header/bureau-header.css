@@ -3,6 +3,8 @@
 }
 
 .bureau-header {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -15,6 +17,17 @@
   box-shadow: 0 2px 4px rgb(70 55 32 / 0.08);
   color: var(--paper-ink);
   font-family: Georgia, 'Times New Roman', serif;
+}
+
+.bureau-header::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border: 12px solid transparent;
+  border-image: url('/assets/archive-paper.png') 60 / 12px / 0 stretch;
+  opacity: 0.55;
+  pointer-events: none;
+  content: '';
 }
 
 .bureau-brand {
@@ -68,19 +81,6 @@ h1 {
   font-size: 11px;
   line-height: 1.4;
   transform: rotate(-4deg);
-}
-
-.bureau-stamp {
-  display: inline-block;
-  padding: 3px 9px;
-  border: 3px double #a14e43;
-  color: #a14e43;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 23px;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: 0.08em;
-  transform: rotate(-8deg);
 }
 
 .bureau-profile {

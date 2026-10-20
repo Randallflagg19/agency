@@ -10,7 +10,9 @@
   padding: 12px;
   border: 1px solid #bcb29d;
   border-radius: 2px;
-  background: linear-gradient(110deg, rgb(255 252 240 / 0.4), rgb(247 241 224 / 0.2));
+  background:
+    url('/assets/paper-grain.svg'),
+    linear-gradient(110deg, rgb(255 252 240 / 0.4), rgb(247 241 224 / 0.2));
   color: var(--paper-ink);
   font-family: Georgia, 'Times New Roman', serif;
 }
@@ -101,7 +103,7 @@ h2 {
 }
 
 .case-card__tag--active {
-  background-color: #a9d39f;
+  background-color: #b2cba2;
 }
 
 .case-card__footer {

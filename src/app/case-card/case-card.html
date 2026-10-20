@@ -20,7 +20,7 @@
 
     <h2>{{ card.title }}</h2>
 
-    <div class="case-card__tags" aria-label="Статус и категория дела">
+    <div class="case-card__tags" role="group" aria-label="Статус и категория дела">
       <span class="case-card__tag" [class.case-card__tag--active]="card.isActive">
         {{ card.statusLabel }}
       </span>
