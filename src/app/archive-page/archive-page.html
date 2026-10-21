@@ -21,8 +21,6 @@
     />
   </section>
 
-  <p>{{ status() }}</p>
-
   <ul class="case-list" aria-label="Дела бюро">
     @for (case of filteredCases(); track case.id) {
       <li>

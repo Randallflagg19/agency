@@ -35,8 +35,6 @@ export class ArchivePage {
 
   protected readonly routeCaseId = computed(() => this.routeParams().get('caseId'));
 
-  protected readonly status = computed(() => this.queryParams().get('status')) ?? 'all';
-
   protected readonly regions = [
     ...new Set(
       this.cases
@@ -60,10 +58,18 @@ export class ArchivePage {
     this.searchQuery.set(value);
   }
 
-  protected readonly statusFilter = signal<CaseStatusFilter>('all');
+  protected readonly statusFilter = computed(
+    () => (this.queryParams().get('status') ?? 'all') as CaseStatusFilter,
+  );
 
   updateStatusFilter(status: CaseStatusFilter): void {
-    this.statusFilter.set(status);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        status: status === 'all' ? null : status,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   protected readonly categoryFilter = signal<CaseCategoryFilter>('all');
@@ -85,7 +91,7 @@ export class ArchivePage {
   }
 
   resetFilters() {
-    this.statusFilter.set('all');
+    this.updateStatusFilter('all');
     this.categoryFilter.set('all');
     this.threatLevelFilter.set('all');
     this.regionFilter.set('all');
