@@ -1,4 +1,4 @@
-import { Component, computed, type Signal, signal, inject } from '@angular/core';
+import { Component, computed, type Signal, signal, inject, effect } from '@angular/core';
 import type { IncidentCase } from '../cases/case.model';
 import { MOCK_CASES } from '../cases/cases.mock';
 import { CaseFilters } from '../case-filters/case-filters';
@@ -11,6 +11,8 @@ import type {
   ThreatLevelFilter,
 } from '../case-filters/case-filters.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import type { CaseStatus } from '../cases/case.model';
+import { CASE_STATUSES } from '../cases/case.model';
 
 @Component({
   imports: [CaseCard, CaseDetails, CaseFilters],
@@ -45,9 +47,26 @@ export class ArchivePage {
 
   protected readonly searchQuery = signal('');
 
-  protected readonly statusFilter = computed(
-    () => (this.queryParams().get('status') ?? 'all') as CaseStatusFilter,
-  );
+  protected readonly statusFilter = computed(() => {
+    const status = this.queryParams().get('status');
+    if (!status) return 'all';
+    if (CASE_STATUSES.some((item) => item === status)) return status as CaseStatus;
+    else return 'all';
+  });
+
+  private readonly statusChange = effect(() => {
+    const status = this.queryParams().get('status');
+    if (status === null) return;
+    if (!CASE_STATUSES.some((item) => item === status)) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {
+          status: null,
+        },
+        queryParamsHandling: 'merge',
+      });
+    }
+  });
 
   protected readonly categoryFilter = signal<CaseCategoryFilter>('all');
 

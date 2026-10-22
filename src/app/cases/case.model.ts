@@ -1,4 +1,6 @@
-export type CaseStatus = 'new' | 'investigating' | 'suspended' | 'closed';
+export const CASE_STATUSES = ['new', 'investigating', 'suspended', 'closed'] as const;
+
+export type CaseStatus = (typeof CASE_STATUSES)[number];
 
 export type CaseCategory =
   | 'unknown'
