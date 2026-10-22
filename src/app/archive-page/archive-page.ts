@@ -19,8 +19,6 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './archive-page.html',
 })
 export class ArchivePage {
-  protected readonly cases = MOCK_CASES;
-
   private readonly router = inject(Router);
 
   private readonly route = inject(ActivatedRoute);
@@ -33,7 +31,7 @@ export class ArchivePage {
     initialValue: this.route.snapshot.queryParamMap,
   });
 
-  protected readonly routeCaseId = computed(() => this.routeParams().get('caseId'));
+  protected readonly cases = MOCK_CASES;
 
   protected readonly regions = [
     ...new Set(
@@ -43,59 +41,19 @@ export class ArchivePage {
     ),
   ];
 
-  handleCaseSelected(caseId: string) {
-    this.router.navigate(['/cases', caseId]);
-  }
-
-  protected readonly selectedCase: Signal<IncidentCase | null> = computed(() => {
-    const caseId = this.routeCaseId();
-    return this.cases.find((item) => item.id === caseId) ?? null;
-  });
+  protected readonly routeCaseId = computed(() => this.routeParams().get('caseId'));
 
   protected readonly searchQuery = signal('');
-
-  updateSearchQuery(value: string): void {
-    this.searchQuery.set(value);
-  }
 
   protected readonly statusFilter = computed(
     () => (this.queryParams().get('status') ?? 'all') as CaseStatusFilter,
   );
 
-  updateStatusFilter(status: CaseStatusFilter): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        status: status === 'all' ? null : status,
-      },
-      queryParamsHandling: 'merge',
-    });
-  }
-
   protected readonly categoryFilter = signal<CaseCategoryFilter>('all');
-
-  updateCategoryFilter(category: CaseCategoryFilter): void {
-    this.categoryFilter.set(category);
-  }
 
   protected readonly threatLevelFilter = signal<ThreatLevelFilter>('all');
 
-  updateThreatLevelFilter(threatLevel: ThreatLevelFilter): void {
-    this.threatLevelFilter.set(threatLevel);
-  }
-
   protected readonly regionFilter = signal<string>('all');
-
-  updateRegionFilter(region: string): void {
-    this.regionFilter.set(region);
-  }
-
-  resetFilters() {
-    this.updateStatusFilter('all');
-    this.categoryFilter.set('all');
-    this.threatLevelFilter.set('all');
-    this.regionFilter.set('all');
-  }
 
   protected readonly filteredCases = computed(() => {
     const status = this.statusFilter();
@@ -116,4 +74,46 @@ export class ArchivePage {
       );
     });
   });
+
+  protected readonly selectedCase: Signal<IncidentCase | null> = computed(() => {
+    const caseId = this.routeCaseId();
+    return this.cases.find((item) => item.id === caseId) ?? null;
+  });
+
+  handleCaseSelected(caseId: string) {
+    this.router.navigate(['/cases', caseId]);
+  }
+
+  updateSearchQuery(value: string): void {
+    this.searchQuery.set(value);
+  }
+
+  updateStatusFilter(status: CaseStatusFilter): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        status: status === 'all' ? null : status,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  updateCategoryFilter(category: CaseCategoryFilter): void {
+    this.categoryFilter.set(category);
+  }
+
+  updateThreatLevelFilter(threatLevel: ThreatLevelFilter): void {
+    this.threatLevelFilter.set(threatLevel);
+  }
+
+  updateRegionFilter(region: string): void {
+    this.regionFilter.set(region);
+  }
+
+  resetFilters() {
+    this.updateStatusFilter('all');
+    this.categoryFilter.set('all');
+    this.threatLevelFilter.set('all');
+    this.regionFilter.set('all');
+  }
 }
