@@ -50,6 +50,18 @@ export class ArchivePage {
         });
       }
     });
+    effect(() => {
+      const currentCaseId = this.routeParams().get('caseId');
+      if (
+        currentCaseId &&
+        this.cases.some((item) => item.id === currentCaseId) &&
+        !this.filteredCases().some((item) => item.id === currentCaseId)
+      ) {
+        this.router.navigate(['/'], {
+          queryParamsHandling: 'merge',
+        });
+      }
+    });
   }
 
   private readonly router = inject(Router);
