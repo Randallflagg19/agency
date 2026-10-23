@@ -14,7 +14,9 @@ export const CASE_CATEGORIES = [
 
 export type CaseCategory = (typeof CASE_CATEGORIES)[number];
 
-export type ThreatLevel = 1 | 2 | 3 | 4 | 5;
+export const THREAT_LEVELS = [1, 2, 3, 4, 5] as const;
+
+export type ThreatLevel = (typeof THREAT_LEVELS)[number];
 
 export interface CaseLocation {
   /** Регион для фильтрации; null, если пока неизвестен. */
