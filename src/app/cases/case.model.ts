@@ -2,14 +2,17 @@ export const CASE_STATUSES = ['new', 'investigating', 'suspended', 'closed'] as 
 
 export type CaseStatus = (typeof CASE_STATUSES)[number];
 
-export type CaseCategory =
-  | 'unknown'
-  | 'acoustic'
-  | 'visual'
-  | 'telecommunication'
-  | 'disappearance'
-  | 'spatial'
-  | 'physical';
+export const CASE_CATEGORIES = [
+  'unknown',
+  'acoustic',
+  'visual',
+  'telecommunication',
+  'disappearance',
+  'spatial',
+  'physical',
+] as const;
+
+export type CaseCategory = (typeof CASE_CATEGORIES)[number];
 
 export type ThreatLevel = 1 | 2 | 3 | 4 | 5;
 

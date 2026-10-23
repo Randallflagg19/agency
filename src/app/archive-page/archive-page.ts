@@ -1,5 +1,5 @@
 import { Component, computed, type Signal, signal, inject, effect } from '@angular/core';
-import type { IncidentCase } from '../cases/case.model';
+import type { CaseCategory, IncidentCase } from '../cases/case.model';
 import { MOCK_CASES } from '../cases/cases.mock';
 import { CaseFilters } from '../case-filters/case-filters';
 import { CaseDetails } from '../case-details/case-details';
@@ -12,7 +12,7 @@ import type {
 } from '../case-filters/case-filters.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import type { CaseStatus } from '../cases/case.model';
-import { CASE_STATUSES } from '../cases/case.model';
+import { CASE_STATUSES, CASE_CATEGORIES } from '../cases/case.model';
 
 @Component({
   imports: [CaseCard, CaseDetails, CaseFilters],
@@ -54,21 +54,12 @@ export class ArchivePage {
     else return 'all';
   });
 
-  private readonly statusChange = effect(() => {
-    const status = this.queryParams().get('status');
-    if (status === null) return;
-    if (!CASE_STATUSES.some((item) => item === status)) {
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: {
-          status: null,
-        },
-        queryParamsHandling: 'merge',
-      });
-    }
+  protected readonly categoryFilter = computed(() => {
+    const category = this.queryParams().get('category');
+    if (!category) return 'all';
+    if (CASE_CATEGORIES.some((item) => item === category)) return category as CaseCategory;
+    else return 'all';
   });
-
-  protected readonly categoryFilter = signal<CaseCategoryFilter>('all');
 
   protected readonly threatLevelFilter = signal<ThreatLevelFilter>('all');
 
@@ -94,9 +85,23 @@ export class ArchivePage {
     });
   });
 
+  private readonly statusChange = effect(() => {
+    const status = this.queryParams().get('status');
+    if (status === null) return;
+    if (!CASE_STATUSES.some((item) => item === status)) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: {
+          status: null,
+        },
+        queryParamsHandling: 'merge',
+      });
+    }
+  });
+
   protected readonly selectedCase: Signal<IncidentCase | null> = computed(() => {
     const caseId = this.routeCaseId();
-    return this.cases.find((item) => item.id === caseId) ?? null;
+    return this.filteredCases().find((item) => item.id === caseId) ?? null;
   });
 
   handleCaseSelected(caseId: string) {
@@ -118,7 +123,13 @@ export class ArchivePage {
   }
 
   updateCategoryFilter(category: CaseCategoryFilter): void {
-    this.categoryFilter.set(category);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        category: category === 'all' ? null : category,
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 
   updateThreatLevelFilter(threatLevel: ThreatLevelFilter): void {
@@ -130,8 +141,14 @@ export class ArchivePage {
   }
 
   resetFilters() {
-    this.updateStatusFilter('all');
-    this.categoryFilter.set('all');
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        status: null,
+        category: null,
+      },
+      queryParamsHandling: 'merge',
+    });
     this.threatLevelFilter.set('all');
     this.regionFilter.set('all');
   }
