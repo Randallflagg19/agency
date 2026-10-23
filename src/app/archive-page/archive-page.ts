@@ -43,7 +43,6 @@ export class ArchivePage {
 
       if (Object.keys(filters).length) {
         this.router.navigate([], {
-          relativeTo: this.route,
           queryParams: {
             ...filters,
           },
