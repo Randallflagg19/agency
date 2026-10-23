@@ -14,6 +14,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import type { CaseStatus } from '../cases/case.model';
 import { CASE_STATUSES, CASE_CATEGORIES, THREAT_LEVELS } from '../cases/case.model';
 
+function isValidStatus(status: string | null) {
+  return CASE_STATUSES.some((item) => item === status);
+}
+
+function isValidCategory(category: string | null) {
+  return CASE_CATEGORIES.some((item) => item === category);
+}
+
+function isValidThreatLevel(threatLevel: string | null) {
+  return THREAT_LEVELS.some((item) => item.toString() === threatLevel);
+}
+
 @Component({
   imports: [CaseCard, CaseDetails, CaseFilters],
   selector: 'app-archive-page',
@@ -30,14 +42,9 @@ export class ArchivePage {
 
       const filters: { status?: null; category?: null; threatLevel?: null; region?: null } = {};
 
-      if (status !== null && !CASE_STATUSES.some((item) => item === status)) filters.status = null;
-      if (category !== null && !CASE_CATEGORIES.some((item) => item === category))
-        filters.category = null;
-      if (
-        threatLevel !== null &&
-        threatLevel !== 'unrated' &&
-        !THREAT_LEVELS.some((item) => item.toString() === threatLevel)
-      )
+      if (status !== null && !isValidStatus(status)) filters.status = null;
+      if (category !== null && !isValidCategory(category)) filters.category = null;
+      if (threatLevel !== null && threatLevel !== 'unrated' && !isValidThreatLevel(threatLevel))
         filters.threatLevel = null;
       if (region !== null && !this.regions.some((item) => item === region)) filters.region = null;
 
@@ -93,14 +100,14 @@ export class ArchivePage {
   protected readonly statusFilter = computed(() => {
     const status = this.queryParams().get('status');
     if (!status) return 'all';
-    if (CASE_STATUSES.some((item) => item === status)) return status as CaseStatus;
+    if (isValidStatus(status)) return status as CaseStatus;
     else return 'all';
   });
 
   protected readonly categoryFilter = computed(() => {
     const category = this.queryParams().get('category');
     if (!category) return 'all';
-    if (CASE_CATEGORIES.some((item) => item === category)) return category as CaseCategory;
+    if (isValidCategory(category)) return category as CaseCategory;
     else return 'all';
   });
 
@@ -108,8 +115,7 @@ export class ArchivePage {
     const threatLevel = this.queryParams().get('threatLevel');
     if (!threatLevel) return 'all';
     if (threatLevel === 'unrated') return null;
-    if (THREAT_LEVELS.some((item) => item.toString() === threatLevel))
-      return Number(threatLevel) as ThreatLevel;
+    if (isValidThreatLevel(threatLevel)) return Number(threatLevel) as ThreatLevel;
     else return 'all';
   });
 
