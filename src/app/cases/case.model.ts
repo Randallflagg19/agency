@@ -26,6 +26,13 @@ export interface CaseLocation {
   readonly address: string | null;
 }
 
+export type ArchiveQueryChanges = {
+  status?: CaseStatus | null;
+  category?: CaseCategory | null;
+  threatLevel?: ThreatLevel | 'unrated' | null;
+  region?: string | null;
+};
+
 export interface IncidentCase {
   /** Стабильный внутренний идентификатор. */
   readonly id: string;

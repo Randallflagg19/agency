@@ -1,5 +1,10 @@
 import { Component, computed, type Signal, signal, inject, effect } from '@angular/core';
-import type { CaseCategory, IncidentCase, ThreatLevel } from '../cases/case.model';
+import type {
+  ArchiveQueryChanges,
+  CaseCategory,
+  IncidentCase,
+  ThreatLevel,
+} from '../cases/case.model';
 import { MOCK_CASES } from '../cases/cases.mock';
 import { CaseFilters } from '../case-filters/case-filters';
 import { CaseDetails } from '../case-details/case-details';
@@ -12,19 +17,13 @@ import type {
 } from '../case-filters/case-filters.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import type { CaseStatus } from '../cases/case.model';
-import { CASE_STATUSES, CASE_CATEGORIES, THREAT_LEVELS } from '../cases/case.model';
-
-function isValidStatus(status: string | null) {
-  return CASE_STATUSES.some((item) => item === status);
-}
-
-function isValidCategory(category: string | null) {
-  return CASE_CATEGORIES.some((item) => item === category);
-}
-
-function isValidThreatLevel(threatLevel: string | null) {
-  return THREAT_LEVELS.some((item) => item.toString() === threatLevel);
-}
+import {
+  isValidCategory,
+  isValidStatus,
+  isValidThreatLevel,
+  isValidRegion,
+  getInvalidQueryParams,
+} from './archive-query-params';
 
 @Component({
   imports: [CaseCard, CaseDetails, CaseFilters],
@@ -35,23 +34,12 @@ function isValidThreatLevel(threatLevel: string | null) {
 export class ArchivePage {
   constructor() {
     effect(() => {
-      const status = this.queryParams().get('status');
-      const category = this.queryParams().get('category');
-      const threatLevel = this.queryParams().get('threatLevel');
-      const region = this.queryParams().get('region');
+      const invalidQueryParams = getInvalidQueryParams(this.queryParams(), this.regions);
 
-      const filters: { status?: null; category?: null; threatLevel?: null; region?: null } = {};
-
-      if (status !== null && !isValidStatus(status)) filters.status = null;
-      if (category !== null && !isValidCategory(category)) filters.category = null;
-      if (threatLevel !== null && threatLevel !== 'unrated' && !isValidThreatLevel(threatLevel))
-        filters.threatLevel = null;
-      if (region !== null && !this.regions.some((item) => item === region)) filters.region = null;
-
-      if (Object.keys(filters).length) {
+      if (Object.keys(invalidQueryParams).length) {
         this.router.navigate([], {
           queryParams: {
-            ...filters,
+            ...invalidQueryParams,
           },
           queryParamsHandling: 'merge',
         });
@@ -122,7 +110,7 @@ export class ArchivePage {
   protected readonly regionFilter = computed(() => {
     const region = this.queryParams().get('region');
     if (!region) return 'all';
-    if (this.regions.some((item) => item === region)) return region;
+    if (isValidRegion(region, this.regions)) return region;
     else return 'all';
   });
 
@@ -151,6 +139,18 @@ export class ArchivePage {
     return this.filteredCases().find((item) => item.id === caseId) ?? null;
   });
 
+  updateSearchQuery(value: string): void {
+    this.searchQuery.set(value);
+  }
+
+  updateQueryParams(change: ArchiveQueryChanges) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: change,
+      queryParamsHandling: 'merge',
+    });
+  }
+
   handleCaseSelected(caseId: string) {
     this.router.navigate(['/cases', caseId], {
       relativeTo: this.route,
@@ -158,64 +158,27 @@ export class ArchivePage {
     });
   }
 
-  updateSearchQuery(value: string): void {
-    this.searchQuery.set(value);
-  }
-
   updateStatusFilter(status: CaseStatusFilter): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        status: status === 'all' ? null : status,
-      },
-      queryParamsHandling: 'merge',
-    });
+    this.updateQueryParams({ status: status === 'all' ? null : status });
   }
 
   updateCategoryFilter(category: CaseCategoryFilter): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        category: category === 'all' ? null : category,
-      },
-      queryParamsHandling: 'merge',
-    });
+    this.updateQueryParams({ category: category === 'all' ? null : category });
   }
 
   updateThreatLevelFilter(threatLevel: ThreatLevelFilter): void {
-    let levelParam;
+    let levelParam: ThreatLevel | 'unrated' | null;
     if (threatLevel === 'all') levelParam = null;
     else if (threatLevel === null) levelParam = 'unrated';
     else levelParam = threatLevel;
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        threatLevel: levelParam,
-      },
-      queryParamsHandling: 'merge',
-    });
+    this.updateQueryParams({ threatLevel: levelParam });
   }
 
   updateRegionFilter(region: string): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        region: region === 'all' ? null : region,
-      },
-      queryParamsHandling: 'merge',
-    });
+    this.updateQueryParams({ region: region === 'all' ? null : region });
   }
 
   resetFilters() {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        status: null,
-        category: null,
-        threatLevel: null,
-        region: null,
-      },
-      queryParamsHandling: 'merge',
-    });
+    this.updateQueryParams({ status: null, category: null, threatLevel: null, region: null });
   }
 }
