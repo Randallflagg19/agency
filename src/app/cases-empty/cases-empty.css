@@ -1,0 +1,132 @@
+:host {
+  display: block;
+  container-type: inline-size;
+}
+
+.empty-results {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 420px;
+  padding: 48px 40px;
+  border: 1px solid #ad9e84;
+  border-radius: 2px;
+  background: #eee5d2;
+  box-shadow: 0 3px 8px #46372029;
+  color: var(--paper-ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  text-align: center;
+}
+
+.empty-results::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border: 24px solid transparent;
+  border-image: url('/assets/archive-paper.png') 60 fill / 24px / 0 stretch;
+  pointer-events: none;
+  content: '';
+}
+
+.empty-results::after {
+  position: absolute;
+  inset: 16px;
+  border: 3px double #8e795b80;
+  pointer-events: none;
+  content: '';
+}
+
+.empty-results__illustration {
+  width: 140px;
+  height: auto;
+  margin-bottom: 24px;
+  color: #71634f;
+}
+
+.empty-results h3 {
+  max-width: 18ch;
+  margin: 0;
+  font-size: clamp(28px, 5.5cqi, 38px);
+  font-weight: 700;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.empty-results p {
+  margin: 16px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.empty-results__divider {
+  position: relative;
+  width: 180px;
+  max-width: 70%;
+  height: 1px;
+  margin: 24px 0;
+  background: #8e795b;
+}
+
+.empty-results__divider::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border: 4px solid #eee5d2;
+  box-sizing: content-box;
+  background: #8e795b;
+  transform: translate(-50%, -50%) rotate(45deg);
+  content: '';
+}
+
+.empty-results button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 48px;
+  max-width: 100%;
+  padding: 12px 24px;
+  border: 1px solid #34492c;
+  border-radius: 2px;
+  background: #293e24;
+  color: #fff9eb;
+  font-family: inherit;
+  font-size: 17px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.empty-results button svg {
+  flex: none;
+}
+
+.empty-results button:hover {
+  background: #354e2e;
+}
+
+.empty-results button:focus-visible {
+  outline: 3px solid #293e24;
+  outline-offset: 4px;
+}
+
+@container (max-width: 440px) {
+  .empty-results {
+    padding: 36px 28px;
+  }
+
+  .empty-results__illustration {
+    width: 120px;
+  }
+
+  .empty-results button {
+    gap: 10px;
+    padding-inline: 14px;
+    font-size: 16px;
+  }
+}

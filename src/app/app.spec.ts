@@ -39,6 +39,43 @@ describe('App', () => {
     expect(cards[4]?.querySelector('.case-card__location')).toBeNull();
   });
 
+  it('restores cases after clearing search and filters from the empty results', async () => {
+    const fixture = TestBed.createComponent(App);
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/?status=suspended&category=telecommunication&threatLevel=3');
+    await fixture.whenStable();
+    const page = fixture.nativeElement as HTMLElement;
+    const search = page.querySelector<HTMLInputElement>('#caseSearch')!;
+    search.value = 'Несуществующее дело';
+    search.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+
+    expect(page.querySelector('app-cases-empty')).not.toBeNull();
+    expect(page.querySelector('.case-list')).toBeNull();
+    expect(page.querySelector('app-case-details')).toBeNull();
+    expect(page.querySelector('app-case-not-found')).toBeNull();
+
+    page.querySelector<HTMLButtonElement>('app-cases-empty button')!.click();
+    await fixture.whenStable();
+
+    expect(search.value).toBe('');
+    expect(router.url).toBe('/');
+    expect(page.querySelector('app-cases-empty')).toBeNull();
+    expect(page.querySelectorAll('.case-card')).toHaveLength(6);
+  });
+
+  it('keeps an unknown case separate from empty search results', async () => {
+    const fixture = TestBed.createComponent(App);
+    await TestBed.inject(Router).navigateByUrl(
+      '/cases/missing-case?status=suspended&threatLevel=1',
+    );
+    await fixture.whenStable();
+    const page = fixture.nativeElement as HTMLElement;
+
+    expect(page.querySelector('app-case-not-found')).not.toBeNull();
+    expect(page.querySelector('app-cases-empty')).toBeNull();
+  });
+
   it('keeps the selected card, threat indicator and photograph in sync with the route', async () => {
     const fixture = TestBed.createComponent(App);
     const router = TestBed.inject(Router);

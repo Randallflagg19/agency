@@ -10,6 +10,7 @@ import { CaseFilters } from '../case-filters/case-filters';
 import { CaseDetails } from '../case-details/case-details';
 import { CaseCard } from '../case-card/case-card';
 import { CaseNotFound } from '../case-not-found/case-not-found';
+import { CasesEmpty } from '../cases-empty/cases-empty';
 import { toSignal } from '@angular/core/rxjs-interop';
 import type {
   CaseCategoryFilter,
@@ -28,7 +29,7 @@ import {
 import { filterCases } from './archive-filtering';
 
 @Component({
-  imports: [CaseCard, CaseDetails, CaseFilters, CaseNotFound],
+  imports: [CaseCard, CaseDetails, CaseFilters, CaseNotFound, CasesEmpty],
   selector: 'app-archive-page',
   styleUrl: './archive-page.css',
   templateUrl: './archive-page.html',
@@ -177,5 +178,10 @@ export class ArchivePage {
 
   resetFilters() {
     this.updateQueryParams({ status: null, category: null, threatLevel: null, region: null });
+  }
+
+  resetSearchAndFilters(): void {
+    this.searchQuery.set('');
+    this.resetFilters();
   }
 }

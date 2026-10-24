@@ -94,3 +94,13 @@ app-case-not-found {
   min-width: 0;
   align-self: stretch;
 }
+
+app-cases-empty {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-self: center;
+  width: 100%;
+  max-width: 720px;
+  min-width: 0;
+  margin-top: 32px;
+}

@@ -21,23 +21,25 @@
     />
   </section>
 
-  <ul class="case-list" aria-label="Дела бюро">
-    @for (case of filteredCases(); track case.id) {
-      <li>
-        <app-case-card
-          [incident]="case"
-          (caseSelected)="handleCaseSelected($event)"
-          [selected]="routeCaseId() === case.id"
-        />
-      </li>
-    } @empty {
-      <li>Дела не найдены</li>
+  @if (filteredCases().length === 0 && !isCaseNotFound()) {
+    <app-cases-empty (resetRequested)="resetSearchAndFilters()" />
+  } @else {
+    <ul class="case-list" aria-label="Дела бюро">
+      @for (case of filteredCases(); track case.id) {
+        <li>
+          <app-case-card
+            [incident]="case"
+            (caseSelected)="handleCaseSelected($event)"
+            [selected]="routeCaseId() === case.id"
+          />
+        </li>
+      }
+    </ul>
+    @if (selectedCase(); as incident) {
+      <app-case-details [selectedCase]="incident" />
     }
-  </ul>
-  @if (selectedCase(); as incident) {
-    <app-case-details [selectedCase]="incident" />
-  }
-  @if (isCaseNotFound()) {
-    <app-case-not-found />
+    @if (isCaseNotFound()) {
+      <app-case-not-found />
+    }
   }
 </main>
