@@ -24,6 +24,7 @@ import {
   isValidRegion,
   getInvalidQueryParams,
 } from './archive-query-params';
+import { filterCases } from './archive-filtering';
 
 @Component({
   imports: [CaseCard, CaseDetails, CaseFilters],
@@ -121,17 +122,7 @@ export class ArchivePage {
     const region = this.regionFilter();
     const query = this.searchQuery().trim().toLowerCase();
 
-    return this.cases.filter((item) => {
-      const matchesStatus = status === 'all' || item.status === status;
-      const matchesCategory = category === 'all' || item.category === category;
-      const matchesThreatLevel = threatLevel === 'all' || item.threatLevel === threatLevel;
-      const matchesRegion = region === 'all' || item.location?.region === region;
-      const matchesQuery = query === '' || item.title.toLowerCase().includes(query);
-
-      return (
-        matchesStatus && matchesCategory && matchesThreatLevel && matchesQuery && matchesRegion
-      );
-    });
+    return filterCases(status, category, threatLevel, region, query, this.cases);
   });
 
   protected readonly selectedCase: Signal<IncidentCase | null> = computed(() => {
