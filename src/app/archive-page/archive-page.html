@@ -37,4 +37,7 @@
   @if (selectedCase(); as incident) {
     <app-case-details [selectedCase]="incident" />
   }
+  @if (isCaseNotFound()) {
+    <app-case-not-found />
+  }
 </main>

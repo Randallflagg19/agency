@@ -88,7 +88,8 @@ main {
   }
 }
 
-app-case-details {
+app-case-details,
+app-case-not-found {
   grid-area: details;
   min-width: 0;
   align-self: stretch;

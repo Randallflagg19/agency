@@ -9,6 +9,7 @@ import { MOCK_CASES } from '../cases/cases.mock';
 import { CaseFilters } from '../case-filters/case-filters';
 import { CaseDetails } from '../case-details/case-details';
 import { CaseCard } from '../case-card/case-card';
+import { CaseNotFound } from '../case-not-found/case-not-found';
 import { toSignal } from '@angular/core/rxjs-interop';
 import type {
   CaseCategoryFilter,
@@ -27,7 +28,7 @@ import {
 import { filterCases } from './archive-filtering';
 
 @Component({
-  imports: [CaseCard, CaseDetails, CaseFilters],
+  imports: [CaseCard, CaseDetails, CaseFilters, CaseNotFound],
   selector: 'app-archive-page',
   styleUrl: './archive-page.css',
   templateUrl: './archive-page.html',
@@ -128,6 +129,11 @@ export class ArchivePage {
   protected readonly selectedCase: Signal<IncidentCase | null> = computed(() => {
     const caseId = this.routeCaseId();
     return this.filteredCases().find((item) => item.id === caseId) ?? null;
+  });
+
+  protected readonly isCaseNotFound = computed(() => {
+    const currentId = this.routeCaseId();
+    return currentId !== null && !this.cases.some((item) => item.id === currentId);
   });
 
   updateSearchQuery(value: string): void {
