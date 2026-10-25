@@ -1,17 +1,27 @@
-import { Component, computed, type Signal, signal, inject, effect } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  type Signal,
+  signal,
+  inject,
+  effect,
+  viewChild,
+} from '@angular/core';
 import type {
   ArchiveQueryChanges,
   CaseCategory,
   IncidentCase,
   ThreatLevel,
 } from '../cases/case.model';
-import { MOCK_CASES } from '../cases/cases.mock';
+import { CasesApi } from '../cases/cases-api';
 import { CaseFilters } from '../case-filters/case-filters';
 import { CaseDetails } from '../case-details/case-details';
 import { CaseCard } from '../case-card/case-card';
 import { CaseNotFound } from '../case-not-found/case-not-found';
 import { CasesEmpty } from '../cases-empty/cases-empty';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import type {
   CaseCategoryFilter,
   CaseStatusFilter,
@@ -36,8 +46,10 @@ import { filterCases } from './archive-filtering';
 })
 export class ArchivePage {
   constructor() {
+    this.loadCases();
     effect(() => {
-      const invalidQueryParams = getInvalidQueryParams(this.queryParams(), this.regions);
+      if (this.loadState() !== 'loaded') return;
+      const invalidQueryParams = getInvalidQueryParams(this.queryParams(), this.regions());
 
       if (Object.keys(invalidQueryParams).length) {
         this.router.navigate([], {
@@ -49,10 +61,11 @@ export class ArchivePage {
       }
     });
     effect(() => {
+      if (this.loadState() !== 'loaded') return;
       const currentCaseId = this.routeParams().get('caseId');
       if (
         currentCaseId &&
-        this.cases.some((item) => item.id === currentCaseId) &&
+        this.cases().some((item) => item.id === currentCaseId) &&
         !this.filteredCases().some((item) => item.id === currentCaseId)
       ) {
         this.router.navigate(['/'], {
@@ -63,6 +76,9 @@ export class ArchivePage {
   }
 
   private readonly router = inject(Router);
+  private readonly api = inject(CasesApi);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly archiveTitle = viewChild<ElementRef<HTMLHeadingElement>>('archiveTitle');
 
   private readonly route = inject(ActivatedRoute);
 
@@ -74,15 +90,16 @@ export class ArchivePage {
     initialValue: this.route.snapshot.queryParamMap,
   });
 
-  protected readonly cases = MOCK_CASES;
+  protected readonly cases = signal<readonly IncidentCase[]>([]);
+  protected readonly loadState = signal<'loading' | 'loaded' | 'error'>('loading');
 
-  protected readonly regions = [
+  protected readonly regions = computed(() => [
     ...new Set(
-      this.cases
+      this.cases()
         .map((incident) => incident.location?.region)
         .filter((region) => region !== null && region !== undefined),
     ),
-  ];
+  ]);
 
   protected readonly routeCaseId = computed(() => this.routeParams().get('caseId'));
 
@@ -113,7 +130,7 @@ export class ArchivePage {
   protected readonly regionFilter = computed(() => {
     const region = this.queryParams().get('region');
     if (!region) return 'all';
-    if (isValidRegion(region, this.regions)) return region;
+    if (isValidRegion(region, this.regions())) return region;
     else return 'all';
   });
 
@@ -124,7 +141,7 @@ export class ArchivePage {
     const region = this.regionFilter();
     const query = this.searchQuery().trim().toLowerCase();
 
-    return filterCases(status, category, threatLevel, region, query, this.cases);
+    return filterCases(status, category, threatLevel, region, query, this.cases());
   });
 
   protected readonly selectedCase: Signal<IncidentCase | null> = computed(() => {
@@ -134,8 +151,31 @@ export class ArchivePage {
 
   protected readonly isCaseNotFound = computed(() => {
     const currentId = this.routeCaseId();
-    return currentId !== null && !this.cases.some((item) => item.id === currentId);
+    return (
+      this.loadState() === 'loaded' &&
+      currentId !== null &&
+      !this.cases().some((item) => item.id === currentId)
+    );
   });
+
+  private loadCases(): void {
+    this.loadState.set('loading');
+    this.api
+      .getCases()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (cases) => {
+          this.cases.set(cases);
+          this.loadState.set('loaded');
+        },
+        error: () => this.loadState.set('error'),
+      });
+  }
+
+  protected retryLoad(): void {
+    this.archiveTitle()?.nativeElement.focus();
+    this.loadCases();
+  }
 
   updateSearchQuery(value: string): void {
     this.searchQuery.set(value);

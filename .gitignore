@@ -42,3 +42,9 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Server secrets and database backups
+.env
+.env.*
+!.env.example
+*.dump

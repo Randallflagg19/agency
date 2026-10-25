@@ -2,12 +2,18 @@ import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { provideRouter, Router } from '@angular/router';
 import { routes } from './app.routes';
+import { CasesApi } from './cases/cases-api';
+import { MOCK_CASES } from './cases/cases.mock';
+import { of } from 'rxjs';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter(routes)],
+      providers: [
+        provideRouter(routes),
+        { provide: CasesApi, useValue: { getCases: () => of(MOCK_CASES) } },
+      ],
     }).compileComponents();
   });
 

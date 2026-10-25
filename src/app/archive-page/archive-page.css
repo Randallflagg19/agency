@@ -2,6 +2,29 @@
   display: block;
 }
 
+.archive-state {
+  grid-column: 1 / -1;
+  color: #3d382f;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.archive-state button {
+  padding: 10px 16px;
+  border: 1px solid #655f53;
+  border-radius: 4px;
+  color: #3d382f;
+  background: #fffaf0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.archive-state button:focus-visible,
+#archive-title:focus-visible {
+  outline: 3px solid #403829;
+  outline-offset: 4px;
+}
+
 main {
   display: grid;
   grid-template-columns: clamp(430px, 39vw, 600px) minmax(0, 1fr);

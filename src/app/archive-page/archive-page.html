@@ -1,27 +1,38 @@
 <main>
   <section class="archive-toolbar" aria-labelledby="archive-title">
     <div class="archive-summary">
-      <h2 id="archive-title">Архив дел</h2>
+      <h2 id="archive-title" #archiveTitle tabindex="-1">Архив дел</h2>
       <p>Каталог зарегистрированных аномальных происшествий</p>
-      <p>Всего в архиве: {{ cases.length }} дел.</p>
+      @if (loadState() === 'loaded') {
+        <p>Всего в архиве: {{ cases().length }} дел.</p>
+      }
     </div>
-    <app-case-filters
-      [query]="searchQuery()"
-      (queryChanged)="updateSearchQuery($event)"
-      [status]="statusFilter()"
-      (statusChanged)="updateStatusFilter($event)"
-      [category]="categoryFilter()"
-      (categoryChanged)="updateCategoryFilter($event)"
-      [threatLevel]="threatLevelFilter()"
-      (threatLevelChanged)="updateThreatLevelFilter($event)"
-      [regions]="regions"
-      [region]="regionFilter()"
-      (regionChanged)="updateRegionFilter($event)"
-      (resetButtonClicked)="resetFilters()"
-    />
+    @if (loadState() === 'loaded') {
+      <app-case-filters
+        [query]="searchQuery()"
+        (queryChanged)="updateSearchQuery($event)"
+        [status]="statusFilter()"
+        (statusChanged)="updateStatusFilter($event)"
+        [category]="categoryFilter()"
+        (categoryChanged)="updateCategoryFilter($event)"
+        [threatLevel]="threatLevelFilter()"
+        (threatLevelChanged)="updateThreatLevelFilter($event)"
+        [regions]="regions()"
+        [region]="regionFilter()"
+        (regionChanged)="updateRegionFilter($event)"
+        (resetButtonClicked)="resetFilters()"
+      />
+    }
   </section>
 
-  @if (filteredCases().length === 0 && !isCaseNotFound()) {
+  @if (loadState() === 'loading') {
+    <p class="archive-state" role="status">Загружаем дела из архива…</p>
+  } @else if (loadState() === 'error') {
+    <div class="archive-state">
+      <p role="alert">Не удалось загрузить дела. Проверьте соединение и попробуйте снова.</p>
+      <button type="button" (click)="retryLoad()">Повторить загрузку</button>
+    </div>
+  } @else if (filteredCases().length === 0 && !isCaseNotFound()) {
     <app-cases-empty (resetRequested)="resetSearchAndFilters()" />
   } @else {
     <ul class="case-list" aria-label="Дела бюро">
