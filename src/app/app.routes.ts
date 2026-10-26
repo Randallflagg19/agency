@@ -2,6 +2,12 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: 'cases/new',
+    title: 'Новое дело',
+    loadComponent: () =>
+      import('./case-create-page/case-create-page').then((module) => module.CaseCreatePage),
+  },
+  {
     // Одна запись маршрута сохраняет ArchivePage при выборе и закрытии дела.
     matcher: (segments) => {
       if (segments.length === 0) return { consumed: segments };
