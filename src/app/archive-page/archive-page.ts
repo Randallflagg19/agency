@@ -16,6 +16,7 @@ import type {
   ThreatLevel,
 } from '../cases/case.model';
 import { CasesApi } from '../cases/cases-api';
+import { ArchiveReset } from './archive-reset';
 import { CaseFilters } from '../case-filters/case-filters';
 import { CaseDetails } from '../case-details/case-details';
 import { CaseCard } from '../case-card/case-card';
@@ -48,6 +49,10 @@ export class ArchivePage {
   constructor() {
     this.loadCases();
     effect(() => {
+      this.archiveReset.version();
+      this.searchQuery.set('');
+    });
+    effect(() => {
       if (this.loadState() !== 'loaded') return;
       const invalidQueryParams = getInvalidQueryParams(this.queryParams(), this.regions());
 
@@ -75,6 +80,7 @@ export class ArchivePage {
     });
   }
 
+  private readonly archiveReset = inject(ArchiveReset);
   private readonly router = inject(Router);
   private readonly api = inject(CasesApi);
   private readonly destroyRef = inject(DestroyRef);

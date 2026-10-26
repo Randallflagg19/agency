@@ -70,6 +70,39 @@ describe('App', () => {
     expect(page.querySelectorAll('.case-card')).toHaveLength(6);
   });
 
+  it('resets search on the archive root and clears filters and the selected case via the brand', async () => {
+    const fixture = TestBed.createComponent(App);
+    const router = TestBed.inject(Router);
+    await router.navigateByUrl('/');
+    await fixture.whenStable();
+    const page = fixture.nativeElement as HTMLElement;
+    const search = page.querySelector<HTMLInputElement>('#caseSearch')!;
+    search.value = 'Несуществующее дело';
+    search.dispatchEvent(new Event('input'));
+    await fixture.whenStable();
+
+    page.querySelector<HTMLAnchorElement>('.bureau-brand')!.click();
+    await fixture.whenStable();
+    expect(search.value).toBe('');
+    expect(page.querySelectorAll('.case-card')).toHaveLength(6);
+
+    await router.navigateByUrl('/cases/case-0147?status=investigating&threatLevel=3');
+    await fixture.whenStable();
+    expect(page.querySelector('app-case-details')).not.toBeNull();
+    page.querySelector<HTMLAnchorElement>('.bureau-brand')!.click();
+    await fixture.whenStable();
+    expect(router.url).toBe('/');
+    expect(page.querySelector('app-case-details')).toBeNull();
+    expect(page.querySelectorAll('.case-card')).toHaveLength(6);
+
+    await router.navigateByUrl('/cases/new');
+    await fixture.whenStable();
+    page.querySelector<HTMLAnchorElement>('.bureau-brand')!.click();
+    await fixture.whenStable();
+    expect(router.url).toBe('/');
+    expect(page.querySelector('#caseSearch')).not.toBeNull();
+  });
+
   it('keeps an unknown case separate from empty search results', async () => {
     const fixture = TestBed.createComponent(App);
     await TestBed.inject(Router).navigateByUrl(

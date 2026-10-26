@@ -1,5 +1,10 @@
 <header class="bureau-header">
-  <div class="bureau-brand">
+  <a
+    class="bureau-brand"
+    routerLink="/"
+    (click)="resetArchive($event)"
+    aria-label="Бюро аномальных происшествий — в начало архива, сбросить фильтры"
+  >
     <img
       class="bureau-emblem"
       ngSrc="/assets/bureau-emblem.png"
@@ -16,7 +21,7 @@
         <span aria-hidden="true">•</span> ПРЕДОТВРАЩАТЬ
       </p>
     </div>
-  </div>
+  </a>
 
   <div class="bureau-note">
     <p>В некоторых случаях<br />правда опаснее незнания</p>
