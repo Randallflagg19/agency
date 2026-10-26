@@ -1,185 +1,300 @@
-<form [formRoot]="caseForm">
-  <div class="form-field">
-    <label for="case-title">Название дела</label>
-    <input
-      id="case-title"
-      type="text"
-      [formField]="caseForm.title"
-      [attr.aria-describedby]="
-        caseForm.title().invalid() && caseForm.title().touched() ? 'case-title-errors' : null
-      "
-    />
-    @if (caseForm.title().invalid() && caseForm.title().touched()) {
-      <div id="case-title-errors" aria-live="polite">
-        @for (error of caseForm.title().errors(); track error) {
-          <p class="field-error">{{ error.message }}</p>
-        }
+<main class="registration-page">
+  <a class="back-link" routerLink="/"> <span aria-hidden="true">←</span> Вернуться к архиву </a>
+  <article class="registration-document" aria-labelledby="registration-title">
+    <aside class="document-sidebar" aria-label="Информация о создании дела">
+      <section class="about-case">
+        <h2>О создании дела</h2>
+        <div class="ornament" aria-hidden="true"><span>◆</span></div>
+        <p>Укажите основную информацию о новом происшествии.</p>
+        <div class="ornament" aria-hidden="true"><span>◆</span></div>
+      </section>
+      <section class="recommendations" aria-labelledby="recommendations-title">
+        <h2 id="recommendations-title">Рекомендации</h2>
+        <ul>
+          <li>Указывайте точные и проверенные данные.</li>
+          <li>Кратко опишите суть события.</li>
+          <li>Используйте реальные географические ориентиры.</li>
+        </ul>
+      </section>
+      <div class="confidential-mark" aria-hidden="true">
+        <img ngSrc="/assets/bureau-emblem.png" width="90" height="90" alt="" />
+        <p>КОНФИДЕНЦИАЛЬНО<br />МАТЕРИАЛЫ БЮРО</p>
       </div>
-    }
-  </div>
+    </aside>
+    <div class="document-content">
+      <header class="document-heading">
+        <p class="form-number">ФОРМА №001</p>
+        <h2 id="registration-title">Регистрация нового дела</h2>
+        <p class="document-intro">
+          Заполните информацию о происшествии для добавления в архив Бюро.
+        </p>
+        <span class="new-material-stamp" aria-hidden="true">НОВЫЙ МАТЕРИАЛ</span>
+        <img
+          class="heading-emblem"
+          ngSrc="/assets/bureau-emblem.png"
+          width="90"
+          height="90"
+          alt=""
+        />
+      </header>
+      <form [formRoot]="caseForm" aria-labelledby="registration-title">
+        <div class="form-field">
+          <label for="case-title"
+            >Название дела
+            @if (caseForm.title().required()) {
+              <span class="required-mark" aria-hidden="true">*</span>
+            }
+          </label>
+          <input
+            id="case-title"
+            placeholder="Введите краткое название дела..."
+            type="text"
+            [formField]="caseForm.title"
+            [attr.aria-describedby]="
+              caseForm.title().invalid() && caseForm.title().touched() ? 'case-title-errors' : null
+            "
+          />
+          @if (caseForm.title().invalid() && caseForm.title().touched()) {
+            <div id="case-title-errors" aria-live="polite">
+              @for (error of caseForm.title().errors(); track error) {
+                <p class="field-error">{{ error.message }}</p>
+              }
+            </div>
+          }
+        </div>
 
-  <div class="form-field">
-    <label for="case-description">Описание дела</label>
-    <textarea
-      id="case-description"
-      rows="5"
-      [formField]="caseForm.description"
-      [attr.aria-describedby]="
-        caseForm.description().invalid() && caseForm.description().touched()
-          ? 'case-description-errors'
-          : null
-      "
-    ></textarea>
-    @if (caseForm.description().invalid() && caseForm.description().touched()) {
-      <div id="case-description-errors" aria-live="polite">
-        @for (error of caseForm.description().errors(); track error) {
-          <p class="field-error">{{ error.message }}</p>
-        }
-      </div>
-    }
-  </div>
-  <div class="form-field">
-    <label for="category-select">Категории</label>
-    <select id="category-select" [formField]="caseForm.category">
-      <option value="unknown">Не определена</option>
-      <option value="acoustic">Аудиальные явления</option>
-      <option value="visual">Визуальные явления</option>
-      <option value="telecommunication">Телекоммуникационные аномалии</option>
-      <option value="disappearance">Исчезновения</option>
-      <option value="spatial">Пространственные аномалии</option>
-      <option value="physical">Физические аномалии</option>
-    </select>
-  </div>
+        <div class="form-field">
+          <label for="case-description"
+            >Описание дела
+            @if (caseForm.description().required()) {
+              <span class="required-mark" aria-hidden="true">*</span>
+            }
+          </label>
+          <textarea
+            id="case-description"
+            placeholder="Кратко опишите происшествие..."
+            rows="3"
+            [formField]="caseForm.description"
+            [attr.aria-describedby]="
+              caseForm.description().invalid() && caseForm.description().touched()
+                ? 'case-description-errors'
+                : null
+            "
+          ></textarea>
+          @if (caseForm.description().invalid() && caseForm.description().touched()) {
+            <div id="case-description-errors" aria-live="polite">
+              @for (error of caseForm.description().errors(); track error) {
+                <p class="field-error">{{ error.message }}</p>
+              }
+            </div>
+          }
+        </div>
+        <div class="classification-row">
+          <div class="form-field">
+            <label for="category-select">Категория</label>
+            <select id="category-select" [formField]="caseForm.category">
+              <option value="unknown">Не определена</option>
+              <option value="acoustic">Аудиальные явления</option>
+              <option value="visual">Визуальные явления</option>
+              <option value="telecommunication">Телекоммуникационные аномалии</option>
+              <option value="disappearance">Исчезновения</option>
+              <option value="spatial">Пространственные аномалии</option>
+              <option value="physical">Физические аномалии</option>
+            </select>
+          </div>
 
-  <fieldset class="form-field">
-    <legend>Уровень угрозы</legend>
+          <fieldset class="form-field">
+            <legend>Уровень угрозы</legend>
 
-    <label>
-      <input
-        type="radio"
-        name="threat-level"
-        value="unrated"
-        [checked]="caseForm.threatLevel().value() === null"
-        (change)="caseForm.threatLevel().value.set(null)"
-      />
-      Не оценён
-    </label>
+            <div class="threat-options">
+              <label>
+                <input
+                  type="radio"
+                  name="threat-level"
+                  value="unrated"
+                  [checked]="caseForm.threatLevel().value() === null"
+                  (change)="caseForm.threatLevel().value.set(null)"
+                />
+                <span>Не оценён</span>
+              </label>
 
-    <label>
-      <input
-        type="radio"
-        name="threat-level"
-        value="1"
-        [checked]="caseForm.threatLevel().value() === 1"
-        (change)="caseForm.threatLevel().value.set(1)"
-      />
-      1
-    </label>
+              <label>
+                <input
+                  type="radio"
+                  name="threat-level"
+                  value="1"
+                  [checked]="caseForm.threatLevel().value() === 1"
+                  (change)="caseForm.threatLevel().value.set(1)"
+                />
+                <span>1</span>
+              </label>
 
-    <label>
-      <input
-        type="radio"
-        name="threat-level"
-        value="2"
-        [checked]="caseForm.threatLevel().value() === 2"
-        (change)="caseForm.threatLevel().value.set(2)"
-      />
-      2
-    </label>
+              <label>
+                <input
+                  type="radio"
+                  name="threat-level"
+                  value="2"
+                  [checked]="caseForm.threatLevel().value() === 2"
+                  (change)="caseForm.threatLevel().value.set(2)"
+                />
+                <span>2</span>
+              </label>
 
-    <label>
-      <input
-        type="radio"
-        name="threat-level"
-        value="3"
-        [checked]="caseForm.threatLevel().value() === 3"
-        (change)="caseForm.threatLevel().value.set(3)"
-      />
-      3
-    </label>
+              <label>
+                <input
+                  type="radio"
+                  name="threat-level"
+                  value="3"
+                  [checked]="caseForm.threatLevel().value() === 3"
+                  (change)="caseForm.threatLevel().value.set(3)"
+                />
+                <span>3</span>
+              </label>
 
-    <label>
-      <input
-        type="radio"
-        name="threat-level"
-        value="4"
-        [checked]="caseForm.threatLevel().value() === 4"
-        (change)="caseForm.threatLevel().value.set(4)"
-      />
-      4
-    </label>
+              <label>
+                <input
+                  type="radio"
+                  name="threat-level"
+                  value="4"
+                  [checked]="caseForm.threatLevel().value() === 4"
+                  (change)="caseForm.threatLevel().value.set(4)"
+                />
+                <span>4</span>
+              </label>
 
-    <label>
-      <input
-        type="radio"
-        name="threat-level"
-        value="5"
-        [checked]="caseForm.threatLevel().value() === 5"
-        (change)="caseForm.threatLevel().value.set(5)"
-      />
-      5
-    </label>
-  </fieldset>
+              <label>
+                <input
+                  type="radio"
+                  name="threat-level"
+                  value="5"
+                  [checked]="caseForm.threatLevel().value() === 5"
+                  (change)="caseForm.threatLevel().value.set(5)"
+                />
+                <span>5</span>
+              </label>
+            </div>
+          </fieldset>
+        </div>
 
-  <div class="form-field">
-    <label for="case-region">Регион</label>
-    <input
-      id="case-region"
-      type="text"
-      [formField]="caseForm.region"
-      [attr.aria-describedby]="
-        caseForm.region().invalid() && caseForm.region().touched() ? 'case-region-errors' : null
-      "
-    />
-    @if (caseForm.region().invalid() && caseForm.region().touched()) {
-      <div id="case-region-errors" aria-live="polite">
-        @for (error of caseForm.region().errors(); track error) {
-          <p class="field-error">{{ error.message }}</p>
-        }
-      </div>
-    }
-  </div>
+        <div class="form-field">
+          <label for="case-region"
+            >Регион
+            @if (caseForm.region().required()) {
+              <span class="required-mark" aria-hidden="true">*</span>
+            }
+          </label>
+          <input
+            id="case-region"
+            placeholder="Введите регион (например, Ленинградская область)..."
+            type="text"
+            [formField]="caseForm.region"
+            [attr.aria-describedby]="
+              caseForm.region().invalid() && caseForm.region().touched()
+                ? 'case-region-errors'
+                : null
+            "
+          />
+          @if (caseForm.region().invalid() && caseForm.region().touched()) {
+            <div id="case-region-errors" aria-live="polite">
+              @for (error of caseForm.region().errors(); track error) {
+                <p class="field-error">{{ error.message }}</p>
+              }
+            </div>
+          }
+        </div>
 
-  <div class="form-field">
-    <label for="case-locationDescription">Описание локации</label>
-    <input
-      id="case-locationDescription"
-      type="text"
-      [formField]="caseForm.locationDescription"
-      [attr.aria-describedby]="
-        caseForm.locationDescription().invalid() && caseForm.locationDescription().touched()
-          ? 'case-locationDescription-errors'
-          : null
-      "
-    />
-    @if (caseForm.locationDescription().invalid() && caseForm.locationDescription().touched()) {
-      <div id="case-locationDescription-errors" aria-live="polite">
-        @for (error of caseForm.locationDescription().errors(); track error) {
-          <p class="field-error">{{ error.message }}</p>
-        }
-      </div>
-    }
-  </div>
+        <div class="form-field">
+          <label for="case-locationDescription"
+            >Описание локации
+            @if (caseForm.locationDescription().required()) {
+              <span class="required-mark" aria-hidden="true">*</span>
+            }
+          </label>
+          <textarea
+            id="case-locationDescription"
+            placeholder="Укажите конкретное место происшествия..."
+            rows="2"
+            [formField]="caseForm.locationDescription"
+            [attr.aria-describedby]="
+              caseForm.locationDescription().invalid() && caseForm.locationDescription().touched()
+                ? 'case-locationDescription-errors'
+                : null
+            "
+          ></textarea>
+          @if (
+            caseForm.locationDescription().invalid() && caseForm.locationDescription().touched()
+          ) {
+            <div id="case-locationDescription-errors" aria-live="polite">
+              @for (error of caseForm.locationDescription().errors(); track error) {
+                <p class="field-error">{{ error.message }}</p>
+              }
+            </div>
+          }
+        </div>
 
-  <div class="form-field">
-    <label for="case-address">Адрес</label>
-    <input
-      id="case-address"
-      type="text"
-      [formField]="caseForm.address"
-      [attr.aria-describedby]="
-        caseForm.address().invalid() && caseForm.address().touched() ? 'case-address-errors' : null
-      "
-    />
-    @if (caseForm.address().invalid() && caseForm.address().touched()) {
-      <div id="case-address-errors" aria-live="polite">
-        @for (error of caseForm.address().errors(); track error) {
-          <p class="field-error">{{ error.message }}</p>
-        }
-      </div>
-    }
-  </div>
+        <div class="form-field">
+          <label for="case-address"
+            >Адрес
+            @if (caseForm.address().required()) {
+              <span class="required-mark" aria-hidden="true">*</span>
+            }
+          </label>
+          <input
+            id="case-address"
+            placeholder="Введите точный адрес, если известен..."
+            type="text"
+            [formField]="caseForm.address"
+            [attr.aria-describedby]="
+              caseForm.address().invalid() && caseForm.address().touched()
+                ? 'case-address-errors'
+                : null
+            "
+          />
+          @if (caseForm.address().invalid() && caseForm.address().touched()) {
+            <div id="case-address-errors" aria-live="polite">
+              @for (error of caseForm.address().errors(); track error) {
+                <p class="field-error">{{ error.message }}</p>
+              }
+            </div>
+          }
+        </div>
 
-  <button type="submit">Создать дело</button>
-  <p class="draft-preview">Введено: {{ draft().title }}</p>
-</form>
+        <div class="photo-attachment" role="group" aria-label="Фотография">
+          <span class="camera-icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 32 32"
+              width="32"
+              height="32"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M4 9h5l3-4h8l3 4h5a2 2 0 0 1 2 2v15H2V11a2 2 0 0 1 2-2Z" />
+              <circle cx="16" cy="17" r="6" />
+              <path d="M25 12h2" />
+            </svg>
+          </span>
+          <strong>Фотография</strong>
+          <button class="attachment-button" type="button" disabled>
+            <svg
+              viewBox="0 0 24 24"
+              width="23"
+              height="23"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              aria-hidden="true"
+            >
+              <path d="M12 16V3m-6 6 6-6 6 6M3 16v5h18v-5" />
+            </svg>
+            Прикрепить файл
+          </button>
+        </div>
+        <div class="form-actions">
+          <button class="create-button" type="submit">Создать дело</button>
+          <a class="cancel-button" routerLink="/">Отмена</a>
+        </div>
+      </form>
+    </div>
+  </article>
+</main>

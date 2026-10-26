@@ -156,3 +156,10 @@ button:focus-visible {
     margin-left: auto;
   }
 }
+
+@media (max-width: 360px) {
+  .bureau-note {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}

@@ -1,9 +1,11 @@
+import { NgOptimizedImage } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Component, signal } from '@angular/core';
 import { form, FormField, required, FormRoot, maxLength } from '@angular/forms/signals';
 import type { CaseCreateDraft } from './case-create-page.model';
 
 @Component({
-  imports: [FormField, FormRoot],
+  imports: [FormField, FormRoot, NgOptimizedImage, RouterLink],
   selector: 'app-case-create-page',
   styleUrl: './case-create-page.css',
   templateUrl: './case-create-page.html',
