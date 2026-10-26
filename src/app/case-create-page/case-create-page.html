@@ -1,8 +1,20 @@
-<label for="case-title">Название дела</label>
-<input id="case-title" type="text" [formField]="caseForm.title" />
-<p>Введено: {{ draft().title }}</p>
-@if (caseForm.title().invalid() && caseForm.title().touched()) {
-  @for (error of caseForm.title().errors(); track error) {
-    <p>{{ error.message }}</p>
+<form [formRoot]="caseForm">
+  <label for="case-title">Название дела</label>
+  <input id="case-title" type="text" [formField]="caseForm.title" />
+
+  <label for="case-description">Описание дела</label>
+  <textarea id="case-description" [formField]="caseForm.description"></textarea>
+
+  <button type="submit">Создать дело</button>
+  <p>Введено: {{ draft().title }}</p>
+  @if (caseForm.title().invalid() && caseForm.title().touched()) {
+    @for (error of caseForm.title().errors(); track error) {
+      <p>{{ error.message }}</p>
+    }
   }
-}
+  @if (caseForm.description().invalid() && caseForm.description().touched()) {
+    @for (error of caseForm.description().errors(); track error) {
+      <p>{{ error.message }}</p>
+    }
+  }
+</form>
