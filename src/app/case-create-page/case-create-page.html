@@ -123,17 +123,61 @@
 
   <div class="form-field">
     <label for="case-region">Регион</label>
-    <input id="case-region" type="text" [formField]="caseForm.region" />
+    <input
+      id="case-region"
+      type="text"
+      [formField]="caseForm.region"
+      [attr.aria-describedby]="
+        caseForm.region().invalid() && caseForm.region().touched() ? 'case-region-errors' : null
+      "
+    />
+    @if (caseForm.region().invalid() && caseForm.region().touched()) {
+      <div id="case-region-errors" aria-live="polite">
+        @for (error of caseForm.region().errors(); track error) {
+          <p class="field-error">{{ error.message }}</p>
+        }
+      </div>
+    }
   </div>
 
   <div class="form-field">
     <label for="case-locationDescription">Описание локации</label>
-    <input id="case-locationDescription" type="text" [formField]="caseForm.locationDescription" />
+    <input
+      id="case-locationDescription"
+      type="text"
+      [formField]="caseForm.locationDescription"
+      [attr.aria-describedby]="
+        caseForm.locationDescription().invalid() && caseForm.locationDescription().touched()
+          ? 'case-locationDescription-errors'
+          : null
+      "
+    />
+    @if (caseForm.locationDescription().invalid() && caseForm.locationDescription().touched()) {
+      <div id="case-locationDescription-errors" aria-live="polite">
+        @for (error of caseForm.locationDescription().errors(); track error) {
+          <p class="field-error">{{ error.message }}</p>
+        }
+      </div>
+    }
   </div>
 
   <div class="form-field">
     <label for="case-address">Адрес</label>
-    <input id="case-address" type="text" [formField]="caseForm.address" />
+    <input
+      id="case-address"
+      type="text"
+      [formField]="caseForm.address"
+      [attr.aria-describedby]="
+        caseForm.address().invalid() && caseForm.address().touched() ? 'case-address-errors' : null
+      "
+    />
+    @if (caseForm.address().invalid() && caseForm.address().touched()) {
+      <div id="case-address-errors" aria-live="polite">
+        @for (error of caseForm.address().errors(); track error) {
+          <p class="field-error">{{ error.message }}</p>
+        }
+      </div>
+    }
   </div>
 
   <button type="submit">Создать дело</button>

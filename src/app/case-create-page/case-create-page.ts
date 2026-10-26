@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { form, FormField, required, FormRoot } from '@angular/forms/signals';
+import { form, FormField, required, FormRoot, maxLength } from '@angular/forms/signals';
 import type { CaseCreateDraft } from './case-create-page.model';
 
 @Component({
@@ -26,8 +26,23 @@ export class CaseCreatePage {
       required(schema.title, {
         message: 'Введите название дела',
       });
+      maxLength(schema.title, 150, {
+        message: 'Название должно содержать не больше 150 символов',
+      });
       required(schema.description, {
         message: 'Введите описание дела',
+      });
+      maxLength(schema.description, 10000, {
+        message: 'Описание дела должно содержать не больше 10000 символов',
+      });
+      maxLength(schema.region, 150, {
+        message: 'Регион должен содержать не больше 150 символов',
+      });
+      maxLength(schema.locationDescription, 1000, {
+        message: 'Описание локации должно содержать не больше 1000 символов',
+      });
+      maxLength(schema.address, 300, {
+        message: 'Адрес должен содержать не больше 300 символов',
       });
     },
     {
