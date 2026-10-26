@@ -82,13 +82,15 @@ select {
   padding: 5px 8px;
 }
 
-button {
+button,
+.new-case {
   font: inherit;
   font-size: 14px;
   border-radius: 2px;
 }
 
 .new-case {
+  text-decoration: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -123,6 +125,7 @@ button {
 
 input:focus-visible,
 select:focus-visible,
+.new-case:focus-visible,
 button:focus-visible {
   outline: 2px solid #465235;
   outline-offset: 3px;

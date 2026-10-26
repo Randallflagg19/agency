@@ -27,12 +27,14 @@
   white-space: nowrap;
   color: #464034;
   font-size: 13px;
+  text-decoration: none;
+}
+.back-link__arrow {
+  font-size: 24px;
+}
+.back-link__text {
   text-decoration: underline;
   text-underline-offset: 3px;
-}
-.back-link span {
-  font-size: 24px;
-  text-decoration: none;
 }
 
 .registration-document {
@@ -42,12 +44,8 @@
   grid-template-columns: 260px minmax(0, 1fr);
   min-width: 0;
   padding: 28px 30px 30px 20px;
-  border: 1px solid #a3957a;
-  border-radius: 3px;
-  background: #f0e5ce;
-  box-shadow:
-    -2px 2px 0 #c7b89c,
-    0 3px 9px #46372030;
+  border: 1px solid transparent;
+  filter: drop-shadow(0 3px 4px #46372030);
 }
 .registration-document::before,
 .recommendations::before {
@@ -56,6 +54,8 @@
   inset: 0;
   border: 28px solid transparent;
   border-image: url('/assets/archive-paper.png') 60 fill / 28px / 0 stretch;
+  /* Clip the opaque image corners; keep shadows on the paper silhouette. */
+  clip-path: inset(0 round 8px);
   pointer-events: none;
   content: '';
 }
@@ -107,14 +107,13 @@
   isolation: isolate;
   margin-top: 32px;
   padding: 34px 18px 58px;
-  background: #e8d7b33b;
-  box-shadow: 1px 3px 5px #6f583323;
+  filter: drop-shadow(1px 2px 2px #6f583323);
   transform: rotate(-1deg);
 }
 .recommendations::before {
   border-width: 14px;
   border-image-width: 14px;
-  opacity: 0.7;
+  clip-path: inset(0 round 4px);
 }
 .recommendations::after {
   position: absolute;

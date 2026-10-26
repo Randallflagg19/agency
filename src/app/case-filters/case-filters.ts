@@ -1,9 +1,10 @@
 import { Component, input, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import type { CaseCategoryFilter, CaseStatusFilter, ThreatLevelFilter } from './case-filters.model';
 import type { ThreatLevel } from '../cases/case.model';
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-case-filters',
   styleUrl: './case-filters.css',
   templateUrl: './case-filters.html',
