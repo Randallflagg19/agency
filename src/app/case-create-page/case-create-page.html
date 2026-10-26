@@ -1,20 +1,141 @@
 <form [formRoot]="caseForm">
-  <label for="case-title">Название дела</label>
-  <input id="case-title" type="text" [formField]="caseForm.title" />
+  <div class="form-field">
+    <label for="case-title">Название дела</label>
+    <input
+      id="case-title"
+      type="text"
+      [formField]="caseForm.title"
+      [attr.aria-describedby]="
+        caseForm.title().invalid() && caseForm.title().touched() ? 'case-title-errors' : null
+      "
+    />
+    @if (caseForm.title().invalid() && caseForm.title().touched()) {
+      <div id="case-title-errors" aria-live="polite">
+        @for (error of caseForm.title().errors(); track error) {
+          <p class="field-error">{{ error.message }}</p>
+        }
+      </div>
+    }
+  </div>
 
-  <label for="case-description">Описание дела</label>
-  <textarea id="case-description" [formField]="caseForm.description"></textarea>
+  <div class="form-field">
+    <label for="case-description">Описание дела</label>
+    <textarea
+      id="case-description"
+      rows="5"
+      [formField]="caseForm.description"
+      [attr.aria-describedby]="
+        caseForm.description().invalid() && caseForm.description().touched()
+          ? 'case-description-errors'
+          : null
+      "
+    ></textarea>
+    @if (caseForm.description().invalid() && caseForm.description().touched()) {
+      <div id="case-description-errors" aria-live="polite">
+        @for (error of caseForm.description().errors(); track error) {
+          <p class="field-error">{{ error.message }}</p>
+        }
+      </div>
+    }
+  </div>
+  <div class="form-field">
+    <label for="category-select">Категории</label>
+    <select id="category-select" [formField]="caseForm.category">
+      <option value="unknown">Не определена</option>
+      <option value="acoustic">Аудиальные явления</option>
+      <option value="visual">Визуальные явления</option>
+      <option value="telecommunication">Телекоммуникационные аномалии</option>
+      <option value="disappearance">Исчезновения</option>
+      <option value="spatial">Пространственные аномалии</option>
+      <option value="physical">Физические аномалии</option>
+    </select>
+  </div>
+
+  <fieldset class="form-field">
+    <legend>Уровень угрозы</legend>
+
+    <label>
+      <input
+        type="radio"
+        name="threat-level"
+        value="unrated"
+        [checked]="caseForm.threatLevel().value() === null"
+        (change)="caseForm.threatLevel().value.set(null)"
+      />
+      Не оценён
+    </label>
+
+    <label>
+      <input
+        type="radio"
+        name="threat-level"
+        value="1"
+        [checked]="caseForm.threatLevel().value() === 1"
+        (change)="caseForm.threatLevel().value.set(1)"
+      />
+      1
+    </label>
+
+    <label>
+      <input
+        type="radio"
+        name="threat-level"
+        value="2"
+        [checked]="caseForm.threatLevel().value() === 2"
+        (change)="caseForm.threatLevel().value.set(2)"
+      />
+      2
+    </label>
+
+    <label>
+      <input
+        type="radio"
+        name="threat-level"
+        value="3"
+        [checked]="caseForm.threatLevel().value() === 3"
+        (change)="caseForm.threatLevel().value.set(3)"
+      />
+      3
+    </label>
+
+    <label>
+      <input
+        type="radio"
+        name="threat-level"
+        value="4"
+        [checked]="caseForm.threatLevel().value() === 4"
+        (change)="caseForm.threatLevel().value.set(4)"
+      />
+      4
+    </label>
+
+    <label>
+      <input
+        type="radio"
+        name="threat-level"
+        value="5"
+        [checked]="caseForm.threatLevel().value() === 5"
+        (change)="caseForm.threatLevel().value.set(5)"
+      />
+      5
+    </label>
+  </fieldset>
+
+  <div class="form-field">
+    <label for="case-region">Регион</label>
+    <input id="case-region" type="text" [formField]="caseForm.region" />
+  </div>
+
+  <div class="form-field">
+    <label for="case-locationDescription">Описание локации</label>
+    <input id="case-locationDescription" type="text" [formField]="caseForm.locationDescription" />
+  </div>
+
+  <div class="form-field">
+    <label for="case-address">Адрес</label>
+    <input id="case-address" type="text" [formField]="caseForm.address" />
+  </div>
 
   <button type="submit">Создать дело</button>
-  <p>Введено: {{ draft().title }}</p>
-  @if (caseForm.title().invalid() && caseForm.title().touched()) {
-    @for (error of caseForm.title().errors(); track error) {
-      <p>{{ error.message }}</p>
-    }
-  }
-  @if (caseForm.description().invalid() && caseForm.description().touched()) {
-    @for (error of caseForm.description().errors(); track error) {
-      <p>{{ error.message }}</p>
-    }
-  }
+  <p class="draft-preview">Введено: {{ draft().title }}</p>
 </form>

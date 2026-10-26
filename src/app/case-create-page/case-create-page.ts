@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { form, FormField, required, FormRoot } from '@angular/forms/signals';
+import type { CaseCreateDraft } from './case-create-page.model';
 
 @Component({
   imports: [FormField, FormRoot],
@@ -8,9 +9,14 @@ import { form, FormField, required, FormRoot } from '@angular/forms/signals';
   templateUrl: './case-create-page.html',
 })
 export class CaseCreatePage {
-  protected readonly draft = signal({
+  protected readonly draft = signal<CaseCreateDraft>({
     title: '',
     description: '',
+    category: 'unknown',
+    threatLevel: null,
+    region: '',
+    locationDescription: '',
+    address: '',
   });
 
   protected readonly caseForm = form(
