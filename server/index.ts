@@ -2,6 +2,8 @@ import pg from 'pg';
 import { createApiServer } from './app.js';
 import { readAuthConfig } from './auth-config.js';
 import { cleanupSessions } from './auth-store.js';
+import { createCasePhotoStorage } from './case-upload.js';
+import { startCasePhotoCleanup } from './case-photo-cleanup.js';
 
 const port = Number(process.env['API_PORT'] ?? 3000);
 if (!Number.isInteger(port) || port < 1 || port > 65535) {
@@ -21,7 +23,9 @@ const pool = new pg.Pool({
 });
 pool.on('error', () => console.error('Ошибка фонового соединения с PostgreSQL.'));
 
-const server = createApiServer(pool, authConfig);
+const photos = createCasePhotoStorage();
+const server = createApiServer(pool, authConfig, undefined, photos);
+let stopPhotoCleanup: (() => Promise<void>) | undefined;
 const cleanup = () => {
   void cleanupSessions(pool).catch(() => console.error('Не удалось очистить истёкшие сессии.'));
 };
@@ -40,6 +44,7 @@ server.on('error', (error: NodeJS.ErrnoException) => {
 server.listen(port, '127.0.0.1', () => {
   console.log(`API: http://127.0.0.1:${port}/api/cases`);
   cleanup();
+  stopPhotoCleanup = startCasePhotoCleanup(pool, photos);
 });
 
 let stopping = false;
@@ -50,10 +55,12 @@ function shutdown(): void {
   const timeout = setTimeout(() => process.exit(1), 15000);
   timeout.unref();
   server.close(() => {
-    void pool.end().then(
-      () => process.exit(0),
-      () => process.exit(1),
-    );
+    void Promise.resolve(stopPhotoCleanup?.())
+      .then(() => pool.end())
+      .then(
+        () => process.exit(0),
+        () => process.exit(1),
+      );
   });
 }
 process.on('SIGINT', shutdown);

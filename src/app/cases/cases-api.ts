@@ -1,6 +1,7 @@
 import { inject, Service } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { IncidentCase } from './case.model';
+import type { CaseDeletionResult } from './case-deletion.model';
 import type { CaseCreateDraft } from '../case-create-page/case-create-page.model';
 
 @Service()
@@ -9,6 +10,13 @@ export class CasesApi {
 
   getCases() {
     return this.http.get<readonly IncidentCase[]>('/api/cases', { timeout: 15000 });
+  }
+
+  deleteCase(id: string) {
+    return this.http.delete<CaseDeletionResult>(`/api/cases/${encodeURIComponent(id)}`, {
+      headers: { 'X-Agency-CSRF': '1' },
+      timeout: 15000,
+    });
   }
 
   createCase(draft: CaseCreateDraft, photo: File) {

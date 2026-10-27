@@ -39,6 +39,12 @@
     }
   </div>
 
+  <div class="access-feedback" role="status" aria-atomic="true">
+    @if (deletionMessage(); as message) {
+      <p>{{ message }}</p>
+    }
+  </div>
+
   @if (loadState() === 'loading') {
     <p class="archive-state" role="status">Загружаем дела из архива…</p>
   } @else if (loadState() === 'error') {
@@ -61,7 +67,7 @@
       }
     </ul>
     @if (selectedCase(); as incident) {
-      <app-case-details [selectedCase]="incident" />
+      <app-case-details [selectedCase]="incident" (deleted)="handleCaseDeleted($event)" />
     }
     @if (isCaseNotFound()) {
       <app-case-not-found />

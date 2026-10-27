@@ -17,6 +17,7 @@ import type {
   ThreatLevel,
 } from '../cases/case.model';
 import { CasesApi } from '../cases/cases-api';
+import type { CaseDeletionResult } from '../cases/case-deletion.model';
 import { ArchiveReset } from './archive-reset';
 import { CaseFilters } from '../case-filters/case-filters';
 import { CaseDetails } from '../case-details/case-details';
@@ -112,14 +113,18 @@ export class ArchivePage {
   });
 
   protected readonly cases = signal<readonly IncidentCase[]>([]);
+  protected readonly deletionMessage = signal<string | null>(null);
+  // Сохраняем выбранный регион, даже если удалено последнее дело этого региона.
+  private readonly retainedRegions = signal<readonly string[]>([]);
   protected readonly loadState = signal<'loading' | 'loaded' | 'error'>('loading');
 
   protected readonly regions = computed(() => [
-    ...new Set(
-      this.cases()
+    ...new Set([
+      ...this.retainedRegions(),
+      ...this.cases()
         .map((incident) => incident.location?.region)
         .filter((region) => region !== null && region !== undefined),
-    ),
+    ]),
   ]);
 
   protected readonly routeCaseId = computed(() => this.routeParams().get('caseId'));
@@ -196,6 +201,29 @@ export class ArchivePage {
   protected retryLoad(): void {
     this.archiveTitle()?.nativeElement.focus();
     this.loadCases();
+  }
+
+  protected async handleCaseDeleted(result: CaseDeletionResult): Promise<void> {
+    const region = this.regionFilter();
+    if (region !== 'all')
+      this.retainedRegions.update((regions) => [...new Set([...regions, region])]);
+    this.cases.update((cases) =>
+      cases
+        .filter((incident) => incident.id !== result.id)
+        .map((incident) => ({
+          ...incident,
+          relatedCaseIds: incident.relatedCaseIds.filter((id) => id !== result.id),
+        })),
+    );
+    this.deletionMessage.set(
+      result.alreadyAbsent
+        ? 'Дело уже отсутствует в архиве. Статус очистки фотографии не подтверждён.'
+        : result.photoCleanup === 'pending'
+          ? 'Дело удалено. Очистка фотографии ожидается и будет повторяться автоматически при работающем API.'
+          : 'Дело удалено.',
+    );
+    await this.router.navigate(['/'], { queryParamsHandling: 'preserve', replaceUrl: true });
+    this.archiveTitle()?.nativeElement.focus();
   }
 
   protected requestNewCase(trigger: HTMLButtonElement): void {

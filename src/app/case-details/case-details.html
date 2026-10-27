@@ -2,7 +2,7 @@
   <header class="case-details__header">
     <div class="case-details__heading">
       <p class="case-details__number">CASE №{{ selectedCase().number }}</p>
-      <h2 class="case-details__title">{{ selectedCase().title }}</h2>
+      <h2 #caseTitle class="case-details__title" tabindex="-1">{{ selectedCase().title }}</h2>
     </div>
     <app-classified-stamp />
   </header>
@@ -83,4 +83,17 @@
       </figure>
     }
   </div>
+  @if (canDelete()) {
+    <footer class="case-details__actions">
+      <button
+        #deleteButton
+        class="delete-case"
+        type="button"
+        (click)="deleteDialog.open(selectedCase(), deleteButton, caseTitle)"
+      >
+        Удалить дело
+      </button>
+    </footer>
+  }
 </article>
+<app-case-delete-dialog #deleteDialog (deleted)="deleted.emit($event)" />

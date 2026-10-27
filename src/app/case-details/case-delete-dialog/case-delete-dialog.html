@@ -1,0 +1,38 @@
+<dialog
+  #dialog
+  class="delete-dialog"
+  tabindex="-1"
+  aria-labelledby="delete-case-title"
+  aria-describedby="delete-case-description delete-case-warning"
+  (cancel)="cancel($event)"
+  (close)="restoreFocus()"
+  (keydown)="containFocus($event)"
+>
+  <h2 id="delete-case-title">Удалить дело?</h2>
+  <p id="delete-case-description" class="case-reference">
+    Дело №{{ incident()?.number }} «{{ incident()?.title }}»
+  </p>
+  <p id="delete-case-warning">Это действие нельзя отменить.</p>
+  <div class="feedback" role="alert" aria-atomic="true">
+    @if (error(); as message) {
+      <p>{{ message }}</p>
+    }
+  </div>
+  <p class="request-status" role="status">
+    {{ pending() ? 'Удаляем дело. Дождитесь ответа…' : '' }}
+  </p>
+  <div class="actions" [attr.aria-busy]="pending()">
+    <button #cancelButton type="button" autofocus [disabled]="pending()" (click)="cancel()">
+      Отмена
+    </button>
+    <button
+      #confirmButton
+      class="confirm-delete"
+      type="button"
+      [disabled]="pending()"
+      (click)="confirm()"
+    >
+      {{ pending() ? 'Удаляем…' : 'Удалить' }}
+    </button>
+  </div>
+</dialog>

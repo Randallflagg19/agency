@@ -17,6 +17,10 @@ export class AuthService {
 
   readonly state = this.authState.asReadonly();
 
+  clearSession(): void {
+    this.authState.set({ status: 'unauthenticated' });
+  }
+
   checkSession(): void {
     if (this.authState().status === 'loading') return;
 

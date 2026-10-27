@@ -86,15 +86,12 @@
   </div>
   <div class="filter-field">
     <label for="caseRegion">Регион</label>
-    <select
-      #regionField
-      id="caseRegion"
-      [value]="region()"
-      (change)="emitRegionChange(regionField.value)"
-    >
-      <option value="all">Все</option>
-      @for (region of regions(); track region) {
-        <option [value]="region">{{ region }}</option>
+    <select #regionField id="caseRegion" (change)="emitRegionChange(regionField.value)">
+      <option value="all" [selected]="region() === 'all'">Все</option>
+      @for (optionRegion of regions(); track optionRegion) {
+        <option [value]="optionRegion" [selected]="region() === optionRegion">
+          {{ optionRegion }}
+        </option>
       }
     </select>
   </div>

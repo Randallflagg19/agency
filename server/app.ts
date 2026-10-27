@@ -4,6 +4,7 @@ import { Auth } from './auth.js';
 import { readAuthConfig, type AuthConfig } from './auth-config.js';
 import { createAuthStore, type AuthStore } from './auth-store.js';
 import { getCases } from './cases.js';
+import { deleteCase } from './case-delete.js';
 import {
   createCasePhotoStorage,
   createCaseWithPhoto,
@@ -24,13 +25,14 @@ export function createApiServer(
     async (request, response) => {
       try {
         const pathname = request.url?.split('?')[0];
+        const caseMatch = pathname?.match(/^\/api\/cases\/(case-[0-9]{4,19})$/);
         const methods: Record<string, readonly string[]> = {
           '/api/cases': ['GET', 'POST'],
           '/api/auth/login': ['POST'],
           '/api/auth/me': ['GET'],
           '/api/auth/logout': ['POST'],
         };
-        const method = pathname ? methods[pathname] : undefined;
+        const method = caseMatch ? ['DELETE'] : pathname ? methods[pathname] : undefined;
         if (!method) throw new HttpError(404, 'Маршрут не найден.');
         if (!request.method || !method.includes(request.method)) {
           response.setHeader('Allow', method.join(', '));
@@ -38,6 +40,11 @@ export function createApiServer(
         }
         if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method))
           auth.assertTrustedMutation(request);
+        if (caseMatch) {
+          await auth.requireAdmin(request);
+          sendJson(response, 200, await deleteCase(pool, caseMatch[1]));
+          return;
+        }
         switch (pathname) {
           case '/api/cases':
             if (request.method === 'GET') {
