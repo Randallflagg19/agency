@@ -3,18 +3,24 @@ import type { Pool } from 'pg';
 import { Auth } from './auth.js';
 import { readAuthConfig, type AuthConfig } from './auth-config.js';
 import { createAuthStore, type AuthStore } from './auth-store.js';
-import { createCase, getCases } from './cases.js';
-import { parseCaseCreateBody } from './case-create.js';
-import { HttpError, readJson, sendJson } from './http.js';
+import { getCases } from './cases.js';
+import {
+  createCasePhotoStorage,
+  createCaseWithPhoto,
+  readCaseUpload,
+  type CasePhotoStorage,
+} from './case-upload.js';
+import { HttpError, sendJson } from './http.js';
 
 export function createApiServer(
   pool: Pool,
   config: AuthConfig = readAuthConfig(),
   store: AuthStore = createAuthStore(pool),
+  photos: CasePhotoStorage = createCasePhotoStorage(),
 ) {
   const auth = new Auth(store, config);
   return createServer(
-    { maxHeaderSize: 16384, requestTimeout: 15000, headersTimeout: 10000 },
+    { maxHeaderSize: 16384, requestTimeout: 60000, headersTimeout: 10000 },
     async (request, response) => {
       try {
         const pathname = request.url?.split('?')[0];
@@ -38,9 +44,8 @@ export function createApiServer(
               sendJson(response, 200, await getCases(pool));
             } else {
               await auth.requireAdmin(request);
-              // Отдельный лимит: текст дела может быть длиннее данных входа.
-              const data = parseCaseCreateBody(await readJson(request, 128 * 1024));
-              const created = await createCase(pool, data);
+              const { data, file } = await readCaseUpload(request);
+              const created = await createCaseWithPhoto(pool, data, file, photos);
               response.setHeader('Location', `/cases/${created.id}`);
               sendJson(response, 201, created);
             }

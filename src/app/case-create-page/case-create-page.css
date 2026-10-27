@@ -31,7 +31,6 @@
   white-space: nowrap;
   color: #464034;
   font-size: 13px;
-  text-decoration: none;
 }
 .back-link__arrow {
   font-size: 24px;
@@ -180,7 +179,6 @@
 .document-heading h2 {
   position: relative;
   margin: 0;
-  padding-right: 0;
   font-size: clamp(28px, 2.45vw, 40px);
   font-weight: 700;
   line-height: 1.15;
@@ -379,8 +377,7 @@ legend {
   padding-top: 10px;
   border-top: 1px solid #a5936d29;
 }
-button,
-.cancel-button {
+button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -401,22 +398,12 @@ button,
   color: #29271f;
   background: #fff7e328;
 }
-.attachment-button {
-  margin-left: auto;
-  padding-inline: 20px;
-  border-color: #ad9979;
-  background: #f6ecd32e;
-  color: #494235;
-  font-size: 16px;
-  cursor: default;
-}
 .create-button:hover {
   filter: brightness(1.12);
 }
 .cancel-button:hover {
   background: #fff8e866;
 }
-a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
@@ -469,16 +456,12 @@ select:focus-visible,
 }
 
 @media (min-width: 1450px) {
-  .document-heading h2 {
-    padding-right: 0;
-  }
   .new-material-stamp {
     top: 12px;
-    right: 110px;
     transform: translateY(-8px) rotate(-12deg);
   }
 }
-@media (min-width: 1201px) and (max-width: 1449px) {
+@media (max-width: 1449px) {
   .document-heading {
     padding-top: 52px;
   }
@@ -491,12 +474,6 @@ select:focus-visible,
   }
   .registration-document {
     grid-template-columns: 230px minmax(0, 1fr);
-  }
-  .document-heading h2 {
-    padding-right: 0;
-  }
-  .document-heading {
-    padding-top: 52px;
   }
   .heading-emblem {
     top: 0;
@@ -550,12 +527,7 @@ select:focus-visible,
     gap: 10px;
   }
   .photo-attachment {
-    flex-wrap: wrap;
     gap: 12px;
-  }
-  .attachment-button {
-    margin-left: 0;
-    flex: 1 1 100%;
   }
   .form-actions {
     flex-wrap: wrap;

@@ -1,4 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Component, computed, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { form, FormField, required, FormRoot, maxLength, validate } from '@angular/forms/signals';
@@ -113,8 +114,8 @@ export class CaseCreatePage {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      this.photoError.set('Размер фотографии не должен превышать 5 МиБ.');
+    if (file.size === 0 || file.size > 5 * 1024 * 1024) {
+      this.photoError.set('Фотография должна быть непустой и не превышать 5 МиБ.');
       input.value = '';
       return;
     }
@@ -172,14 +173,38 @@ export class CaseCreatePage {
       submission: {
         action: async () => {
           this.saveError.set(null);
+          const photo = this.selectedPhoto();
+          if (!photo) {
+            this.photoError.set('Добавьте фотографию дела.');
+            return;
+          }
 
           let created;
 
           try {
-            created = await firstValueFrom(this.casesApi.createCase(this.draft()));
-          } catch {
+            created = await firstValueFrom(this.casesApi.createCase(this.draft(), photo));
+          } catch (error: unknown) {
+            if (error instanceof HttpErrorResponse) {
+              if (error.status === 401 || error.status === 403) {
+                this.saveError.set(
+                  'Нет доступа к созданию дела. Войдите снова. Черновик сохранён в форме.',
+                );
+                return;
+              }
+              const body: unknown = error.error;
+              if (
+                [400, 413, 415].includes(error.status) &&
+                typeof body === 'object' &&
+                body !== null &&
+                'message' in body &&
+                typeof body.message === 'string'
+              ) {
+                this.saveError.set(body.message);
+                return;
+              }
+            }
             this.saveError.set(
-              'Не удалось подтвердить сохранение. Введённые данные сохранены в форме.',
+              'Не удалось подтвердить сохранение. Данные и фото остались в форме. Перед повторной отправкой проверьте архив в другой вкладке, чтобы не создать дубликат.',
             );
             return;
           }

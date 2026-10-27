@@ -284,40 +284,28 @@
             </svg>
           </span>
           <strong>Фотография</strong>
-          <!-- <button class="attachment-button" type="button" disabled>
-            <svg
-              viewBox="0 0 24 24"
-              width="23"
-              height="23"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              aria-hidden="true"
-            >
-              <path d="M12 16V3m-6 6 6-6 6 6M3 16v5h18v-5" />
-            </svg>
-            Прикрепить файл
-          </button> -->
-          <label for="case-photo">Фотография дела</label>
+          <label for="case-photo">Фотография дела (обязательно)</label>
           <input
             id="case-photo"
             type="file"
             accept="image/jpeg,image/png,image/webp"
+            aria-required="true"
+            aria-describedby="case-photo-hint case-photo-error"
+            [attr.aria-invalid]="photoError() ? 'true' : null"
             (change)="selectPhoto($event)"
             [disabled]="caseForm().submitting()"
           />
+          <p id="case-photo-hint">JPEG, PNG или WebP, до 5 МиБ и 25 мегапикселей, без анимации.</p>
 
           @if (selectedPhoto(); as photo) {
             <p>Выбран файл: {{ photo.name }}</p>
           }
-          @if (photoError()) {
-            <p class="field-error" role="alert">{{ photoError() }}</p>
-          }
+          <p id="case-photo-error" class="field-error" role="alert">{{ photoError() }}</p>
         </div>
         @if (photoPreviewUrl(); as previewUrl) {
           <figure class="photo-preview">
             <img [src]="previewUrl" alt="Предпросмотр выбранной фотографии" />
-            <figcaption>Предпросмотр. Фотография пока не загружена на сервер.</figcaption>
+            <figcaption>Предпросмотр. Фотография загрузится при создании дела.</figcaption>
           </figure>
         }
         @if (saveError()) {

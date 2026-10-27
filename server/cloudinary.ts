@@ -68,8 +68,14 @@ export async function uploadCasePhoto(
     folderMode === 'dynamic'
       ? { asset_folder: CASE_PHOTO_FOLDER, public_id: `${CASE_PHOTO_FOLDER}/${id}` }
       : { folder: CASE_PHOTO_FOLDER, public_id: id };
+  const publicId = `${CASE_PHOTO_FOLDER}/${id}`;
 
   return new Promise((resolve, reject) => {
+    const fail = () => {
+      // При тайм-ауте Cloudinary мог принять файл, но не вернуть ответ.
+      console.error('Загрузка фото не подтверждена; при необходимости сверить ресурс:', publicId);
+      reject(new Error('Не удалось загрузить фотографию в Cloudinary.'));
+    };
     const stream = cloudinary.uploader.upload_stream(
       {
         ...placement,
@@ -80,7 +86,7 @@ export async function uploadCasePhoto(
       },
       (error, result) => {
         if (error || !result) {
-          reject(new Error('Не удалось загрузить фотографию в Cloudinary.'));
+          fail();
           return;
         }
         resolve({
@@ -92,7 +98,7 @@ export async function uploadCasePhoto(
         });
       },
     );
-    stream.on('error', () => reject(new Error('Ошибка передачи фотографии в Cloudinary.')));
+    stream.on('error', fail);
     stream.end(file);
   });
 }

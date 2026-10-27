@@ -1,6 +1,7 @@
 import type { IncidentCase } from '../src/app/cases/case.model.js';
 import type { Pool } from 'pg';
 import type { NewCaseData } from './case-create.js';
+import type { UploadedCasePhoto } from './cloudinary.js';
 
 // Один запрос даёт согласованный снимок дел, тегов и связей.
 // Независимые подзапросы не перемножают теги и связанные дела.
@@ -46,10 +47,11 @@ const INSERT_CASE = `
   ), inserted AS (
     INSERT INTO agency.cases (
       id, number, title, description, status, category, threat_level,
-      location_region, location_description, location_address, registered_at
+      location_region, location_description, location_address, registered_at,
+      cover_image_url, cover_image_public_id, cover_image_asset_id
     )
     SELECT 'case-' || number, number, $1, $2, 'new', $3, $4,
-           $5, $6, $7, CURRENT_TIMESTAMP
+           $5, $6, $7, CURRENT_TIMESTAMP, $8, $9, $10
     FROM formatted_number
     RETURNING *
   )
@@ -59,6 +61,7 @@ const INSERT_CASE = `
 export async function createCase(
   pool: Pick<Pool, 'query'>,
   data: NewCaseData,
+  photo: UploadedCasePhoto,
 ): Promise<IncidentCase> {
   const result = await pool.query<IncidentCase>(INSERT_CASE, [
     data.title,
@@ -68,6 +71,9 @@ export async function createCase(
     data.location?.region ?? null,
     data.location?.description ?? null,
     data.location?.address ?? null,
+    photo.url,
+    photo.publicId,
+    photo.assetId,
   ]);
   const created = result.rows[0];
   if (!created) throw new Error('INSERT не вернул созданное дело.');

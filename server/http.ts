@@ -26,6 +26,15 @@ export async function readJson(request: IncomingMessage, limit = 4096): Promise<
   if (!isJsonContentType(request.headers['content-type'])) {
     throw new HttpError(415, 'Ожидается application/json.');
   }
+  const body = await readBody(request, limit);
+  try {
+    return JSON.parse(body.toString('utf8')) as unknown;
+  } catch {
+    throw new HttpError(400, 'Некорректный JSON.');
+  }
+}
+
+export async function readBody(request: IncomingMessage, limit: number): Promise<Buffer> {
   if (Number(request.headers['content-length']) > limit) {
     throw new HttpError(413, 'Слишком большой запрос.');
   }
@@ -37,9 +46,5 @@ export async function readJson(request: IncomingMessage, limit = 4096): Promise<
     if (size > limit) throw new HttpError(413, 'Слишком большой запрос.');
     chunks.push(buffer);
   }
-  try {
-    return JSON.parse(Buffer.concat(chunks).toString('utf8')) as unknown;
-  } catch {
-    throw new HttpError(400, 'Некорректный JSON.');
-  }
+  return Buffer.concat(chunks);
 }
