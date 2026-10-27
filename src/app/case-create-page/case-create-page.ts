@@ -26,6 +26,7 @@ const INITIAL_CASE_DRAFT: CaseCreateDraft = {
 export class CaseCreatePage {
   private readonly router = inject(Router);
   private readonly cancelDialog = viewChild.required<ElementRef<HTMLDialogElement>>('cancelDialog');
+  private readonly photoInput = viewChild.required<ElementRef<HTMLInputElement>>('photoInput');
   private cancelTrigger: HTMLButtonElement | undefined;
   protected readonly draft = signal<CaseCreateDraft>({ ...INITIAL_CASE_DRAFT });
 
@@ -96,31 +97,40 @@ export class CaseCreatePage {
   }
 
   protected selectPhoto(event: Event): void {
+    if (this.caseForm().submitting()) return;
     const input = event.target;
     if (!(input instanceof HTMLInputElement)) return;
 
     const file = input.files?.[0] ?? null;
+    if (!file) return;
+
+    // The file lives in the signal; clearing the input allows selecting it again.
+    input.value = '';
 
     this.photoError.set(null);
     this.selectedPhoto.set(null);
-
-    if (!file) return;
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
     if (!allowedTypes.includes(file.type)) {
       this.photoError.set('Выберите изображение JPEG, PNG или WebP.');
-      input.value = '';
       return;
     }
 
     if (file.size === 0 || file.size > 5 * 1024 * 1024) {
       this.photoError.set('Фотография должна быть непустой и не превышать 5 МиБ.');
-      input.value = '';
       return;
     }
 
     this.selectedPhoto.set(file);
+  }
+
+  protected removePhoto(): void {
+    if (this.caseForm().submitting()) return;
+    this.selectedPhoto.set(null);
+    this.photoError.set(null);
+    this.photoInput().nativeElement.value = '';
+    this.photoInput().nativeElement.focus();
   }
 
   protected readonly caseForm = form(
@@ -171,6 +181,9 @@ export class CaseCreatePage {
     },
     {
       submission: {
+        onInvalid: () => {
+          if (!this.selectedPhoto()) this.photoError.set('Добавьте фотографию дела.');
+        },
         action: async () => {
           this.saveError.set(null);
           const photo = this.selectedPhoto();

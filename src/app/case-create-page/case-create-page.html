@@ -9,44 +9,41 @@
     <span class="back-link__arrow" aria-hidden="true">←</span>
     <span class="back-link__text">Вернуться к архиву</span>
   </button>
-  <article class="registration-document" aria-labelledby="registration-title">
-    <aside class="document-sidebar" aria-label="Информация о создании дела">
-      <section class="about-case">
-        <h2>О создании дела</h2>
-        <div class="ornament" aria-hidden="true"><span>◆</span></div>
-        <p>Укажите основную информацию о новом происшествии.</p>
-        <div class="ornament" aria-hidden="true"><span>◆</span></div>
-      </section>
-      <section class="recommendations" aria-labelledby="recommendations-title">
-        <h2 id="recommendations-title">Рекомендации</h2>
-        <ul>
-          <li>Указывайте точные и проверенные данные.</li>
-          <li>Кратко опишите суть события.</li>
-          <li>Используйте реальные географические ориентиры.</li>
-        </ul>
-      </section>
-      <div class="confidential-mark" aria-hidden="true">
-        <img ngSrc="/assets/bureau-emblem.png" width="90" height="90" alt="" />
-        <p>КОНФИДЕНЦИАЛЬНО<br />МАТЕРИАЛЫ БЮРО</p>
-      </div>
-    </aside>
-    <div class="document-content">
-      <header class="document-heading">
-        <p class="form-number">ФОРМА №001</p>
-        <h2 id="registration-title">Регистрация нового дела</h2>
-        <p class="document-intro">
-          Заполните информацию о происшествии для добавления в архив Бюро.
-        </p>
-        <span class="new-material-stamp" aria-hidden="true">НОВЫЙ МАТЕРИАЛ</span>
-        <img
-          class="heading-emblem"
-          ngSrc="/assets/bureau-emblem.png"
-          width="90"
-          height="90"
-          alt=""
-        />
-      </header>
-      <form [formRoot]="caseForm" aria-labelledby="registration-title">
+  <aside class="document-sidebar paper" aria-label="Информация о создании дела">
+    <section class="about-case">
+      <h2>О создании дела</h2>
+      <div class="ornament" aria-hidden="true"><span>◆</span></div>
+      <p>Укажите основную информацию о новом происшествии.</p>
+      <div class="ornament" aria-hidden="true"><span>◆</span></div>
+    </section>
+    <section class="recommendations paper" aria-labelledby="recommendations-title">
+      <h2 id="recommendations-title">Рекомендации</h2>
+      <ul>
+        <li>Указывайте точные и проверенные данные.</li>
+        <li>Кратко опишите суть события.</li>
+        <li>Используйте реальные географические ориентиры.</li>
+      </ul>
+    </section>
+    <div class="confidential-mark" aria-hidden="true">
+      <img ngSrc="/assets/bureau-emblem.png" width="90" height="90" alt="" />
+      <p>КОНФИДЕНЦИАЛЬНО<br />МАТЕРИАЛЫ БЮРО</p>
+    </div>
+  </aside>
+  <article class="registration-document paper" aria-labelledby="registration-title">
+    <header class="document-heading">
+      <p class="form-number">ФОРМА №001</p>
+      <h2 id="registration-title">Регистрация нового дела</h2>
+      <p class="document-intro">Заполните информацию о происшествии для добавления в архив Бюро.</p>
+      <span class="new-material-stamp" aria-hidden="true">НОВЫЙ МАТЕРИАЛ</span>
+      <img class="heading-emblem" ngSrc="/assets/bureau-emblem.png" width="90" height="90" alt="" />
+    </header>
+    <form
+      [formRoot]="caseForm"
+      aria-labelledby="registration-title"
+      [attr.aria-busy]="caseForm().submitting()"
+    >
+      <fieldset class="text-fields" [disabled]="caseForm().submitting()">
+        <legend class="visually-hidden">Информация о происшествии</legend>
         <div class="form-field">
           <label for="case-title"
             >Название дела
@@ -56,6 +53,7 @@
           </label>
           <input
             id="case-title"
+            class="control"
             placeholder="Введите краткое название дела..."
             type="text"
             [formField]="caseForm.title"
@@ -81,6 +79,7 @@
           </label>
           <textarea
             id="case-description"
+            class="control"
             placeholder="Кратко опишите происшествие..."
             rows="3"
             [formField]="caseForm.description"
@@ -101,7 +100,7 @@
         <div class="classification-row">
           <div class="form-field">
             <label for="category-select">Категория</label>
-            <select id="category-select" [formField]="caseForm.category">
+            <select id="category-select" class="control" [formField]="caseForm.category">
               <option value="unknown">Не определена</option>
               <option value="acoustic">Аудиальные явления</option>
               <option value="visual">Визуальные явления</option>
@@ -194,6 +193,7 @@
           </label>
           <input
             id="case-region"
+            class="control"
             placeholder="Введите регион (например, Ленинградская область)..."
             type="text"
             [formField]="caseForm.region"
@@ -221,6 +221,7 @@
           </label>
           <textarea
             id="case-locationDescription"
+            class="control"
             placeholder="Укажите конкретное место происшествия..."
             rows="2"
             [formField]="caseForm.locationDescription"
@@ -250,6 +251,7 @@
           </label>
           <input
             id="case-address"
+            class="control"
             placeholder="Введите точный адрес, если известен..."
             type="text"
             [formField]="caseForm.address"
@@ -267,8 +269,61 @@
             </div>
           }
         </div>
-
-        <div class="photo-attachment" role="group" aria-label="Фотография">
+      </fieldset>
+      <section class="photo-attachment" aria-labelledby="case-photo-title">
+        <h3 id="case-photo-title">
+          Фотография дела <span class="required-mark" aria-hidden="true">*</span>
+        </h3>
+        @if (selectedPhoto(); as photo) {
+          <figure class="photo-preview">
+            @if (photoPreviewUrl(); as previewUrl) {
+              <img [src]="previewUrl" alt="Предпросмотр выбранной фотографии" />
+            }
+            <figcaption class="photo-details" id="case-photo-details">
+              <p class="photo-name">{{ photo.name }}</p>
+              <button
+                class="remove-photo"
+                type="button"
+                aria-label="Удалить выбранную фотографию"
+                [disabled]="caseForm().submitting()"
+                (click)="removePhoto()"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="22"
+                  height="22"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  aria-hidden="true"
+                >
+                  <path d="M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7" />
+                </svg>
+              </button>
+            </figcaption>
+          </figure>
+        }
+        <label
+          class="photo-picker"
+          [class.photo-picker--selected]="selectedPhoto() !== null"
+          for="case-photo"
+        >
+          <input
+            #photoInput
+            id="case-photo"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            aria-required="true"
+            aria-labelledby="case-photo-title case-photo-action"
+            [attr.aria-describedby]="
+              selectedPhoto()
+                ? 'case-photo-details case-photo-error'
+                : 'case-photo-error'
+            "
+            [attr.aria-invalid]="photoError() ? 'true' : null"
+            [disabled]="caseForm().submitting()"
+            (change)="selectPhoto($event)"
+          />
           <span class="camera-icon" aria-hidden="true">
             <svg
               viewBox="0 0 32 32"
@@ -283,49 +338,30 @@
               <path d="M25 12h2" />
             </svg>
           </span>
-          <strong>Фотография</strong>
-          <label for="case-photo">Фотография дела (обязательно)</label>
-          <input
-            id="case-photo"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            aria-required="true"
-            aria-describedby="case-photo-hint case-photo-error"
-            [attr.aria-invalid]="photoError() ? 'true' : null"
-            (change)="selectPhoto($event)"
-            [disabled]="caseForm().submitting()"
-          />
-          <p id="case-photo-hint">JPEG, PNG или WebP, до 5 МиБ и 25 мегапикселей, без анимации.</p>
-
-          @if (selectedPhoto(); as photo) {
-            <p>Выбран файл: {{ photo.name }}</p>
-          }
-          <p id="case-photo-error" class="field-error" role="alert">{{ photoError() }}</p>
-        </div>
-        @if (photoPreviewUrl(); as previewUrl) {
-          <figure class="photo-preview">
-            <img [src]="previewUrl" alt="Предпросмотр выбранной фотографии" />
-            <figcaption>Предпросмотр. Фотография загрузится при создании дела.</figcaption>
-          </figure>
-        }
-        @if (saveError()) {
-          <p class="field-error" role="alert">{{ saveError() }}</p>
-        }
-        <div class="form-actions">
-          <button class="create-button" type="submit" [disabled]="caseForm().submitting()">
-            {{ caseForm().submitting() ? 'Сохранение…' : 'Создать дело' }}
-          </button>
-          <button
-            #cancelButton
-            type="button"
-            (click)="cancel(cancelButton)"
-            [disabled]="caseForm().submitting()"
-          >
-            Отмена
-          </button>
-        </div>
-      </form>
-    </div>
+          <span id="case-photo-action">{{
+            selectedPhoto() ? 'Заменить фотографию' : 'Выберите фотографию'
+          }}</span>
+        </label>
+        <p id="case-photo-error" class="field-error" role="alert">{{ photoError() }}</p>
+      </section>
+      @if (saveError()) {
+        <p class="field-error save-error" role="alert">{{ saveError() }}</p>
+      }
+      <div class="form-actions">
+        <button class="create-button" type="submit" [disabled]="caseForm().submitting()">
+          {{ caseForm().submitting() ? 'Сохранение…' : 'Создать дело' }}
+        </button>
+        <button
+          #cancelButton
+          class="cancel-button"
+          type="button"
+          (click)="cancel(cancelButton)"
+          [disabled]="caseForm().submitting()"
+        >
+          Отмена
+        </button>
+      </div>
+    </form>
   </article>
 </main>
 
