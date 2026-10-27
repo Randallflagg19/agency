@@ -8,6 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "api:dev": "tsx --env-file=server/.env server/index.ts",
+    "test:server": "node --import tsx --test server/*.test.ts",
     "dev": "concurrently --kill-others --names SSH,API,WEB \"pnpm dev:tunnel\" \"pnpm dev:api\" \"pnpm dev:web\"",
     "dev:tunnel": "ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -L 127.0.0.1:15432:127.0.0.1:5432 cutesnipe",
     "dev:api": "wait-on --timeout 30000 --log tcp:127.0.0.1:15432 && pnpm api:dev",
@@ -22,6 +23,7 @@
     "@angular/forms": "^22.2.0",
     "@angular/platform-browser": "^22.2.0",
     "@angular/router": "^22.2.0",
+    "argon2": "^0.45.1",
     "pg": "^8.23.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

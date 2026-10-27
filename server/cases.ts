@@ -26,7 +26,7 @@ const SELECT_CASES = `
   ORDER BY c.registered_at DESC, c.id
 `;
 
-export async function getCases(pool: Pool): Promise<readonly IncidentCase[]> {
+export async function getCases(pool: Pick<Pool, 'query'>): Promise<readonly IncidentCase[]> {
   const result = await pool.query<IncidentCase>(SELECT_CASES);
   return result.rows;
 }

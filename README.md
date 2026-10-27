@@ -4,6 +4,7 @@
 
 Архив получает дела через `GET /api/cases`. Запуск Angular и API описан ниже.
 Миграции, заполнение и резервные копии: [database/README.md](database/README.md).
+Вход администратора, cookie, контракт API и проверки: [docs/server-auth.md](docs/server-auth.md).
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.2.
 
@@ -43,9 +44,11 @@ pnpm dev
 Для отдельного запуска API — `pnpm api:dev` (требует уже открытого туннеля).
 На VPS API использует PGPORT=5432 без туннеля; его публикация пока не настроена.
 
-Сервер состоит из трёх файлов: `server/index.ts` запускает API и создаёт
+`server/index.ts` запускает API и создаёт
 подключение к базе, `server/app.ts` обрабатывает HTTP-запрос,
 `server/cases.ts` получает дела SQL-запросом через обычную функцию `getCases(pool)`.
+`server/auth.ts` обрабатывает вход, сессии и права; `server/auth-store.ts`
+содержит параметризованные SQL-запросы авторизации.
 API запускается напрямую из TypeScript через `tsx`; отдельная сборка пока не нужна.
 Проверка серверных типов без сборки: `pnpm exec tsc -p server/tsconfig.json`.
 
