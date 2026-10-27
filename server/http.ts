@@ -22,11 +22,10 @@ function isJsonContentType(contentType: string | undefined): boolean {
   return /^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(contentType ?? '');
 }
 
-export async function readJson(request: IncomingMessage): Promise<unknown> {
+export async function readJson(request: IncomingMessage, limit = 4096): Promise<unknown> {
   if (!isJsonContentType(request.headers['content-type'])) {
     throw new HttpError(415, 'Ожидается application/json.');
   }
-  const limit = 4096;
   if (Number(request.headers['content-length']) > limit) {
     throw new HttpError(413, 'Слишком большой запрос.');
   }

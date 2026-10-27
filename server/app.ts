@@ -3,8 +3,9 @@ import type { Pool } from 'pg';
 import { Auth } from './auth.js';
 import { readAuthConfig, type AuthConfig } from './auth-config.js';
 import { createAuthStore, type AuthStore } from './auth-store.js';
-import { getCases } from './cases.js';
-import { HttpError, sendJson } from './http.js';
+import { createCase, getCases } from './cases.js';
+import { parseCaseCreateBody } from './case-create.js';
+import { HttpError, readJson, sendJson } from './http.js';
 
 export function createApiServer(
   pool: Pool,
@@ -17,23 +18,32 @@ export function createApiServer(
     async (request, response) => {
       try {
         const pathname = request.url?.split('?')[0];
-        const methods: Record<string, string> = {
-          '/api/cases': 'GET',
-          '/api/auth/login': 'POST',
-          '/api/auth/me': 'GET',
-          '/api/auth/logout': 'POST',
+        const methods: Record<string, readonly string[]> = {
+          '/api/cases': ['GET', 'POST'],
+          '/api/auth/login': ['POST'],
+          '/api/auth/me': ['GET'],
+          '/api/auth/logout': ['POST'],
         };
         const method = pathname ? methods[pathname] : undefined;
         if (!method) throw new HttpError(404, 'Маршрут не найден.');
-        if (request.method !== method) {
-          response.setHeader('Allow', method);
+        if (!request.method || !method.includes(request.method)) {
+          response.setHeader('Allow', method.join(', '));
           throw new HttpError(405, 'Метод не поддерживается.');
         }
         if (!['GET', 'HEAD', 'OPTIONS'].includes(request.method))
           auth.assertTrustedMutation(request);
         switch (pathname) {
           case '/api/cases':
-            sendJson(response, 200, await getCases(pool));
+            if (request.method === 'GET') {
+              sendJson(response, 200, await getCases(pool));
+            } else {
+              await auth.requireAdmin(request);
+              // Отдельный лимит: текст дела может быть длиннее данных входа.
+              const data = parseCaseCreateBody(await readJson(request, 128 * 1024));
+              const created = await createCase(pool, data);
+              response.setHeader('Location', `/cases/${created.id}`);
+              sendJson(response, 201, created);
+            }
             break;
           case '/api/auth/login':
             await auth.login(request, response);

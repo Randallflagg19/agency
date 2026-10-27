@@ -1,5 +1,11 @@
 <main class="registration-page">
-  <button #backButton class="back-link" type="button" (click)="cancel(backButton)">
+  <button
+    #backButton
+    class="back-link"
+    type="button"
+    (click)="cancel(backButton)"
+    [disabled]="caseForm().submitting()"
+  >
     <span class="back-link__arrow" aria-hidden="true">←</span>
     <span class="back-link__text">Вернуться к архиву</span>
   </button>
@@ -293,9 +299,21 @@
             Прикрепить файл
           </button>
         </div>
+        @if (saveError()) {
+          <p class="field-error" role="alert">{{ saveError() }}</p>
+        }
         <div class="form-actions">
-          <button class="create-button" type="submit">Создать дело</button>
-          <button #cancelButton type="button" (click)="cancel(cancelButton)">Отмена</button>
+          <button class="create-button" type="submit" [disabled]="caseForm().submitting()">
+            {{ caseForm().submitting() ? 'Сохранение…' : 'Создать дело' }}
+          </button>
+          <button
+            #cancelButton
+            type="button"
+            (click)="cancel(cancelButton)"
+            [disabled]="caseForm().submitting()"
+          >
+            Отмена
+          </button>
         </div>
       </form>
     </div>

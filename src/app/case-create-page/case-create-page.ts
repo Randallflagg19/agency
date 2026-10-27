@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { form, FormField, required, FormRoot, maxLength, validate } from '@angular/forms/signals';
 import type { CaseCreateDraft } from './case-create-page.model';
+import { CasesApi } from '../cases/cases-api';
+import { firstValueFrom } from 'rxjs';
 
 const INITIAL_CASE_DRAFT: CaseCreateDraft = {
   title: '',
@@ -26,6 +28,10 @@ export class CaseCreatePage {
   private cancelTrigger: HTMLButtonElement | undefined;
   protected readonly draft = signal<CaseCreateDraft>({ ...INITIAL_CASE_DRAFT });
 
+  private readonly casesApi = inject(CasesApi);
+
+  protected readonly saveError = signal<string | null>(null);
+
   protected readonly hasChanges = computed(() => {
     const draft = this.draft();
 
@@ -41,6 +47,7 @@ export class CaseCreatePage {
   });
 
   protected cancel(trigger: HTMLButtonElement): void {
+    if (this.caseForm().submitting()) return;
     if (this.hasChanges()) {
       this.cancelTrigger = trigger;
       this.cancelDialog().nativeElement.showModal();
@@ -112,7 +119,20 @@ export class CaseCreatePage {
     {
       submission: {
         action: async () => {
-          console.log(this.draft());
+          this.saveError.set(null);
+
+          let created;
+
+          try {
+            created = await firstValueFrom(this.casesApi.createCase(this.draft()));
+          } catch {
+            this.saveError.set(
+              'Не удалось подтвердить сохранение. Введённые данные сохранены в форме.',
+            );
+            return;
+          }
+
+          await this.router.navigate(['/cases', created.id]);
         },
       },
     },
