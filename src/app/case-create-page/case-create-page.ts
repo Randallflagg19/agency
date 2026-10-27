@@ -1,7 +1,7 @@
 import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Component, signal } from '@angular/core';
-import { form, FormField, required, FormRoot, maxLength } from '@angular/forms/signals';
+import { form, FormField, required, FormRoot, maxLength, validate } from '@angular/forms/signals';
 import type { CaseCreateDraft } from './case-create-page.model';
 
 @Component({
@@ -28,11 +28,31 @@ export class CaseCreatePage {
       required(schema.title, {
         message: 'Введите название дела',
       });
+      validate(schema.title, ({ value }) => {
+        const title = value();
+        if (title.length > 0 && title.trim().length === 0) {
+          return {
+            kind: 'whitespace',
+            message: 'Название не должно состоять только из пробелов',
+          };
+        }
+        return undefined;
+      });
       maxLength(schema.title, 150, {
         message: 'Название должно содержать не больше 150 символов',
       });
       required(schema.description, {
         message: 'Введите описание дела',
+      });
+      validate(schema.description, ({ value }) => {
+        const description = value();
+        if (description.length > 0 && description.trim().length === 0) {
+          return {
+            kind: 'whitespace',
+            message: 'Описание не должно состоять только из пробелов',
+          };
+        }
+        return undefined;
       });
       maxLength(schema.description, 10000, {
         message: 'Описание дела должно содержать не больше 10000 символов',
