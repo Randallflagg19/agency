@@ -1,8 +1,8 @@
 <main class="registration-page">
-  <a class="back-link" routerLink="/">
+  <button #backButton class="back-link" type="button" (click)="cancel(backButton)">
     <span class="back-link__arrow" aria-hidden="true">←</span>
     <span class="back-link__text">Вернуться к архиву</span>
-  </a>
+  </button>
   <article class="registration-document" aria-labelledby="registration-title">
     <aside class="document-sidebar" aria-label="Информация о создании дела">
       <section class="about-case">
@@ -295,9 +295,29 @@
         </div>
         <div class="form-actions">
           <button class="create-button" type="submit">Создать дело</button>
-          <button type="button" (click)="cancel()">Отмена</button>
+          <button #cancelButton type="button" (click)="cancel(cancelButton)">Отмена</button>
         </div>
       </form>
     </div>
   </article>
 </main>
+
+<dialog
+  #cancelDialog
+  class="cancel-dialog"
+  aria-labelledby="cancel-dialog-title"
+  aria-describedby="cancel-dialog-description"
+  (close)="restoreCancelFocus()"
+>
+  <h2 id="cancel-dialog-title">Отменить создание дела?</h2>
+  <p id="cancel-dialog-description">Введённые данные будут потеряны.</p>
+  <div class="ornament" aria-hidden="true"><span>◆</span></div>
+  <div class="cancel-dialog__actions">
+    <button class="create-button" type="button" autofocus (click)="continueEditing()">
+      Продолжить заполнение
+    </button>
+    <button class="cancel-button" type="button" (click)="leaveWithoutSaving()">
+      Выйти без сохранения
+    </button>
+  </div>
+</dialog>

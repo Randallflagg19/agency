@@ -1,6 +1,6 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { form, FormField, required, FormRoot, maxLength, validate } from '@angular/forms/signals';
 import type { CaseCreateDraft } from './case-create-page.model';
 
@@ -15,13 +15,15 @@ const INITIAL_CASE_DRAFT: CaseCreateDraft = {
 };
 
 @Component({
-  imports: [FormField, FormRoot, NgOptimizedImage, RouterLink],
+  imports: [FormField, FormRoot, NgOptimizedImage],
   selector: 'app-case-create-page',
   styleUrl: './case-create-page.css',
   templateUrl: './case-create-page.html',
 })
 export class CaseCreatePage {
   private readonly router = inject(Router);
+  private readonly cancelDialog = viewChild.required<ElementRef<HTMLDialogElement>>('cancelDialog');
+  private cancelTrigger: HTMLButtonElement | undefined;
   protected readonly draft = signal<CaseCreateDraft>({ ...INITIAL_CASE_DRAFT });
 
   protected readonly hasChanges = computed(() => {
@@ -32,21 +34,33 @@ export class CaseCreatePage {
       draft.description !== INITIAL_CASE_DRAFT.description ||
       draft.category !== INITIAL_CASE_DRAFT.category ||
       draft.threatLevel !== INITIAL_CASE_DRAFT.threatLevel ||
-      draft.region !== INITIAL_CASE_DRAFT.description ||
+      draft.region !== INITIAL_CASE_DRAFT.region ||
       draft.locationDescription !== INITIAL_CASE_DRAFT.locationDescription ||
       draft.address !== INITIAL_CASE_DRAFT.address
     );
   });
 
-  protected cancel(): void {
-    if (
-      this.hasChanges() &&
-      !window.confirm('Отменить создание дела? Введённые данные будут потеряны.')
-    ) {
+  protected cancel(trigger: HTMLButtonElement): void {
+    if (this.hasChanges()) {
+      this.cancelTrigger = trigger;
+      this.cancelDialog().nativeElement.showModal();
       return;
     }
 
-    this.router.navigate(['/']);
+    this.leaveWithoutSaving();
+  }
+
+  protected continueEditing(): void {
+    this.cancelDialog().nativeElement.close();
+  }
+
+  protected restoreCancelFocus(): void {
+    this.cancelTrigger?.focus();
+    this.cancelTrigger = undefined;
+  }
+
+  protected leaveWithoutSaving(): void {
+    void this.router.navigate(['/']);
   }
 
   protected readonly caseForm = form(

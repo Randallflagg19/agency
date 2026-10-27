@@ -24,6 +24,10 @@
   align-items: center;
   gap: 10px;
   min-height: 44px;
+  justify-content: start;
+  padding: 0;
+  border: 0;
+  background: transparent;
   white-space: nowrap;
   color: #464034;
   font-size: 13px;
@@ -398,6 +402,42 @@ select:focus-visible,
   color: #a12622;
   font-size: 14px;
   overflow-wrap: anywhere;
+}
+
+.cancel-dialog {
+  width: min(640px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 30px clamp(10px, 4vw, 28px);
+  border: 12px solid transparent;
+  border-image: url('/assets/archive-paper.png') 60 fill / 12px / 0 stretch;
+  background: #f3e8cf;
+  box-shadow: 0 12px 40px #181c1270;
+  color: #29271f;
+  text-align: center;
+}
+.cancel-dialog::backdrop {
+  background: #1e2418b3;
+}
+.cancel-dialog h2 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.cancel-dialog p {
+  margin: 16px 0 0;
+  font-size: 18px;
+}
+.cancel-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 20px;
+}
+.cancel-dialog button {
+  flex: 1 1 220px;
+  padding: 12px;
 }
 
 @media (min-width: 1450px) {
