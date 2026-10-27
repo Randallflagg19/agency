@@ -1,8 +1,18 @@
 import { NgOptimizedImage } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Component, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
 import { form, FormField, required, FormRoot, maxLength, validate } from '@angular/forms/signals';
 import type { CaseCreateDraft } from './case-create-page.model';
+
+const INITIAL_CASE_DRAFT: CaseCreateDraft = {
+  title: '',
+  description: '',
+  category: 'unknown',
+  threatLevel: null,
+  region: '',
+  locationDescription: '',
+  address: '',
+};
 
 @Component({
   imports: [FormField, FormRoot, NgOptimizedImage, RouterLink],
@@ -11,15 +21,33 @@ import type { CaseCreateDraft } from './case-create-page.model';
   templateUrl: './case-create-page.html',
 })
 export class CaseCreatePage {
-  protected readonly draft = signal<CaseCreateDraft>({
-    title: '',
-    description: '',
-    category: 'unknown',
-    threatLevel: null,
-    region: '',
-    locationDescription: '',
-    address: '',
+  private readonly router = inject(Router);
+  protected readonly draft = signal<CaseCreateDraft>({ ...INITIAL_CASE_DRAFT });
+
+  protected readonly hasChanges = computed(() => {
+    const draft = this.draft();
+
+    return (
+      draft.title !== INITIAL_CASE_DRAFT.title ||
+      draft.description !== INITIAL_CASE_DRAFT.description ||
+      draft.category !== INITIAL_CASE_DRAFT.category ||
+      draft.threatLevel !== INITIAL_CASE_DRAFT.threatLevel ||
+      draft.region !== INITIAL_CASE_DRAFT.description ||
+      draft.locationDescription !== INITIAL_CASE_DRAFT.locationDescription ||
+      draft.address !== INITIAL_CASE_DRAFT.address
+    );
   });
+
+  protected cancel(): void {
+    if (
+      this.hasChanges() &&
+      !window.confirm('Отменить создание дела? Введённые данные будут потеряны.')
+    ) {
+      return;
+    }
+
+    this.router.navigate(['/']);
+  }
 
   protected readonly caseForm = form(
     this.draft,
