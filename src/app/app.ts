@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BureauHeader } from './bureau-header/bureau-header';
 import { RouterOutlet } from '@angular/router';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +9,10 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
   imports: [BureauHeader, RouterOutlet],
 })
-export class App {}
+export class App {
+  protected readonly auth = inject(AuthService);
+
+  constructor() {
+    this.auth.checkSession();
+  }
+}
