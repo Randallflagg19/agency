@@ -1,1 +1,115 @@
-<p>login-dialog works!</p>
+<dialog
+  #loginDialog
+  class="login-dialog"
+  aria-labelledby="login-title"
+  aria-describedby="login-description"
+  (cancel)="cancel($event)"
+  (close)="onClosed()"
+>
+  <div class="access-stamp" aria-hidden="true">ДОСТУП ОГРАНИЧЕН</div>
+  <img class="dialog-emblem" ngSrc="/assets/bureau-emblem.png" width="82" height="82" alt="" />
+  <header>
+    <p class="eyebrow">СЛУЖЕБНЫЙ ДОПУСК</p>
+    <h2 id="login-title">Требуется служебный допуск</h2>
+    <p id="login-description" class="description">
+      Регистрация новых дел доступна только уполномоченным сотрудникам Бюро. Подтвердите свои
+      полномочия для продолжения.
+    </p>
+  </header>
+
+  <form [formRoot]="loginForm" [attr.aria-busy]="loginForm().submitting()">
+    <fieldset [disabled]="loginForm().submitting()">
+      <legend class="visually-hidden">Данные для входа</legend>
+      <div class="form-field">
+        <label for="service-login">Служебный логин</label>
+        <input
+          #loginInput
+          id="service-login"
+          type="text"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+          autofocus
+          placeholder="Введите логин…"
+          [formField]="loginForm.login"
+          [attr.aria-invalid]="loginForm.login().touched() && loginForm.login().invalid()"
+          [attr.aria-describedby]="
+            loginForm.login().touched() && loginForm.login().invalid() ? 'login-errors' : null
+          "
+        />
+        @if (loginForm.login().touched() && loginForm.login().invalid()) {
+          <div id="login-errors" aria-live="polite">
+            @for (error of loginForm.login().errors(); track error) {
+              <p class="field-error">{{ error.message }}</p>
+            }
+          </div>
+        }
+      </div>
+      <div class="form-field">
+        <label for="service-password">Пароль</label>
+        <div class="password-field">
+          <input
+            id="service-password"
+            [type]="passwordVisible() ? 'text' : 'password'"
+            autocomplete="current-password"
+            placeholder="Введите пароль…"
+            [formField]="loginForm.password"
+            [attr.aria-invalid]="loginForm.password().touched() && loginForm.password().invalid()"
+            [attr.aria-describedby]="
+              loginForm.password().touched() && loginForm.password().invalid()
+                ? 'password-errors'
+                : null
+            "
+          />
+          <button
+            class="password-toggle"
+            type="button"
+            [attr.aria-label]="passwordVisible() ? 'Скрыть пароль' : 'Показать пароль'"
+            aria-controls="service-password"
+            (click)="passwordVisible.set(!passwordVisible())"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="22"
+              height="22"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              aria-hidden="true"
+            >
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+              <circle cx="12" cy="12" r="3" />
+              @if (passwordVisible()) {
+                <path d="m3 3 18 18" />
+              }
+            </svg>
+          </button>
+        </div>
+        @if (loginForm.password().touched() && loginForm.password().invalid()) {
+          <div id="password-errors" aria-live="polite">
+            @for (error of loginForm.password().errors(); track error) {
+              <p class="field-error">{{ error.message }}</p>
+            }
+          </div>
+        }
+      </div>
+    </fieldset>
+
+    <div class="login-feedback" aria-live="assertive" aria-atomic="true">
+      @if (loginError(); as error) {
+        <p class="field-error">{{ error }}</p>
+      }
+    </div>
+    <div class="ornament" aria-hidden="true"><span>◆</span></div>
+    <p class="security-note">Несанкционированный доступ запрещён</p>
+    <div class="form-actions">
+      <button class="confirm-button" type="submit" [disabled]="loginForm().submitting()">
+        {{ loginForm().submitting() ? 'Проверяем допуск…' : 'Подтвердить доступ' }}
+      </button>
+      <button type="button" [disabled]="loginForm().submitting()" (click)="cancel()">Отмена</button>
+    </div>
+    <span class="visually-hidden" role="status">
+      {{ loginForm().submitting() ? 'Выполняется вход. Дождитесь завершения проверки.' : '' }}
+    </span>
+  </form>
+</dialog>

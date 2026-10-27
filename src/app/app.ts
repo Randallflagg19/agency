@@ -10,7 +10,7 @@ import { AuthService } from './auth/auth.service';
   imports: [BureauHeader, RouterOutlet],
 })
 export class App {
-  protected readonly auth = inject(AuthService);
+  private readonly auth = inject(AuthService);
 
   constructor() {
     this.auth.checkSession();

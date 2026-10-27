@@ -21,9 +21,23 @@
         [region]="regionFilter()"
         (regionChanged)="updateRegionFilter($event)"
         (resetButtonClicked)="resetFilters()"
+        [checkingSession]="checkingSession()"
+        (newCaseRequested)="requestNewCase($event)"
       />
     }
   </section>
+
+  <div class="access-feedback" aria-live="polite" aria-atomic="true">
+    @if (checkingSession()) {
+      <p role="status">Проверяем служебный допуск…</p>
+    }
+    @if (accessMessage(); as message) {
+      <p>{{ message }}</p>
+      @if (auth.state().status === 'error') {
+        <button type="button" (click)="retrySessionCheck()">Повторить проверку</button>
+      }
+    }
+  </div>
 
   @if (loadState() === 'loading') {
     <p class="archive-state" role="status">Загружаем дела из архива…</p>
@@ -54,3 +68,5 @@
     }
   }
 </main>
+
+<app-login-dialog (loggedIn)="handleLoggedIn()" />

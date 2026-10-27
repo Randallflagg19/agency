@@ -9,7 +9,8 @@
   line-height: 1.5;
 }
 
-.archive-state button {
+.archive-state button,
+.access-feedback button {
   padding: 10px 16px;
   border: 1px solid #655f53;
   border-radius: 4px;
@@ -20,9 +21,21 @@
 }
 
 .archive-state button:focus-visible,
+.access-feedback button:focus-visible,
 #archive-title:focus-visible {
   outline: 3px solid #403829;
   outline-offset: 4px;
+}
+
+.access-feedback {
+  grid-area: feedback;
+  color: #3d382f;
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1.5;
+}
+
+.access-feedback:not(:empty) {
+  margin-bottom: 16px;
 }
 
 main {
@@ -30,6 +43,7 @@ main {
   grid-template-columns: clamp(430px, 39vw, 600px) minmax(0, 1fr);
   grid-template-areas:
     'toolbar toolbar'
+    'feedback feedback'
     'list details';
   column-gap: 20px;
   align-items: start;
@@ -100,6 +114,7 @@ main {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       'toolbar'
+      'feedback'
       'list'
       'details';
   }
@@ -120,7 +135,7 @@ app-case-not-found {
 
 app-cases-empty {
   grid-column: 1 / -1;
-  grid-row: 2;
+  grid-row: 3;
   justify-self: center;
   width: 100%;
   max-width: 720px;

@@ -21,7 +21,16 @@
       (input)="emitQueryChange(searchField.value)"
     />
   </div>
-  <a class="new-case" routerLink="/cases/new"><span aria-hidden="true">+</span> Новое дело</a>
+  <button
+    #newCaseButton
+    class="new-case"
+    type="button"
+    [disabled]="checkingSession()"
+    [attr.aria-busy]="checkingSession()"
+    (click)="newCaseRequested.emit(newCaseButton)"
+  >
+    <span aria-hidden="true">+</span> Новое дело
+  </button>
 </div>
 
 <div class="filter-row">

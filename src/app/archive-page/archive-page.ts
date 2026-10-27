@@ -8,6 +8,7 @@ import {
   inject,
   effect,
   viewChild,
+  untracked,
 } from '@angular/core';
 import type {
   ArchiveQueryChanges,
@@ -38,9 +39,12 @@ import {
   getInvalidQueryParams,
 } from './archive-query-params';
 import { filterCases } from './archive-filtering';
+import { AuthService } from '../auth/auth.service';
+import type { AuthState } from '../auth/auth.model';
+import { LoginDialog } from '../auth/login-dialog/login-dialog';
 
 @Component({
-  imports: [CaseCard, CaseDetails, CaseFilters, CaseNotFound, CasesEmpty],
+  imports: [CaseCard, CaseDetails, CaseFilters, CaseNotFound, CasesEmpty, LoginDialog],
   selector: 'app-archive-page',
   styleUrl: './archive-page.css',
   templateUrl: './archive-page.html',
@@ -48,6 +52,12 @@ import { filterCases } from './archive-filtering';
 export class ArchivePage {
   constructor() {
     this.loadCases();
+    effect(() => {
+      const state = this.auth.state();
+      if (this.checkingSession()) {
+        untracked(() => this.resolveNewCaseRequest(state));
+      }
+    });
     effect(() => {
       this.archiveReset.version();
       this.searchQuery.set('');
@@ -81,6 +91,11 @@ export class ArchivePage {
   }
 
   private readonly archiveReset = inject(ArchiveReset);
+  protected readonly auth = inject(AuthService);
+  private readonly loginDialog = viewChild.required(LoginDialog);
+  private newCaseTrigger: HTMLButtonElement | undefined;
+  protected readonly checkingSession = signal(false);
+  protected readonly accessMessage = signal<string | null>(null);
   private readonly router = inject(Router);
   private readonly api = inject(CasesApi);
   private readonly destroyRef = inject(DestroyRef);
@@ -181,6 +196,57 @@ export class ArchivePage {
   protected retryLoad(): void {
     this.archiveTitle()?.nativeElement.focus();
     this.loadCases();
+  }
+
+  protected requestNewCase(trigger: HTMLButtonElement): void {
+    if (this.checkingSession()) return;
+    this.newCaseTrigger = trigger;
+    this.accessMessage.set(null);
+    this.checkingSession.set(true);
+  }
+
+  protected retrySessionCheck(): void {
+    this.accessMessage.set(null);
+    this.auth.checkSession();
+    this.checkingSession.set(true);
+  }
+
+  private resolveNewCaseRequest(state: AuthState): void {
+    switch (state.status) {
+      case 'idle':
+        this.auth.checkSession();
+        return;
+      case 'loading':
+        return;
+      case 'error':
+        this.accessMessage.set(
+          'Не удалось проверить служебный допуск. Проверьте соединение и повторите проверку.',
+        );
+        break;
+      case 'unauthenticated':
+        if (this.newCaseTrigger) this.loginDialog().open(this.newCaseTrigger);
+        break;
+      case 'authenticated':
+        this.openCreationForAdmin(state.user.role);
+        break;
+    }
+    this.checkingSession.set(false);
+  }
+
+  protected handleLoggedIn(): void {
+    this.loginDialog().close();
+    const state = this.auth.state();
+    if (state.status === 'authenticated') this.openCreationForAdmin(state.user.role);
+  }
+
+  private openCreationForAdmin(role: string): void {
+    if (role === 'admin') {
+      void this.router.navigate(['/cases/new']);
+    } else {
+      this.accessMessage.set(
+        'Создавать дела может только администратор. У вашей учётной записи нет необходимого допуска.',
+      );
+    }
   }
 
   updateSearchQuery(value: string): void {
