@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
+import { adminGuard } from './auth/admin.guard';
 
 export const routes: Routes = [
   {
     path: 'cases/new',
+    canActivate: [adminGuard],
     title: 'Новое дело',
     loadComponent: () =>
       import('./case-create-page/case-create-page').then((module) => module.CaseCreatePage),
