@@ -284,7 +284,7 @@
             </svg>
           </span>
           <strong>Фотография</strong>
-          <button class="attachment-button" type="button" disabled>
+          <!-- <button class="attachment-button" type="button" disabled>
             <svg
               viewBox="0 0 24 24"
               width="23"
@@ -297,8 +297,29 @@
               <path d="M12 16V3m-6 6 6-6 6 6M3 16v5h18v-5" />
             </svg>
             Прикрепить файл
-          </button>
+          </button> -->
+          <label for="case-photo">Фотография дела</label>
+          <input
+            id="case-photo"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            (change)="selectPhoto($event)"
+            [disabled]="caseForm().submitting()"
+          />
+
+          @if (selectedPhoto(); as photo) {
+            <p>Выбран файл: {{ photo.name }}</p>
+          }
+          @if (photoError()) {
+            <p class="field-error" role="alert">{{ photoError() }}</p>
+          }
         </div>
+        @if (photoPreviewUrl(); as previewUrl) {
+          <figure class="photo-preview">
+            <img [src]="previewUrl" alt="Предпросмотр выбранной фотографии" />
+            <figcaption>Предпросмотр. Фотография пока не загружена на сервер.</figcaption>
+          </figure>
+        }
         @if (saveError()) {
           <p class="field-error" role="alert">{{ saveError() }}</p>
         }

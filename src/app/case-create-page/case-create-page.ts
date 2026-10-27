@@ -1,6 +1,6 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Router } from '@angular/router';
-import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { form, FormField, required, FormRoot, maxLength, validate } from '@angular/forms/signals';
 import type { CaseCreateDraft } from './case-create-page.model';
 import { CasesApi } from '../cases/cases-api';
@@ -42,7 +42,8 @@ export class CaseCreatePage {
       draft.threatLevel !== INITIAL_CASE_DRAFT.threatLevel ||
       draft.region !== INITIAL_CASE_DRAFT.region ||
       draft.locationDescription !== INITIAL_CASE_DRAFT.locationDescription ||
-      draft.address !== INITIAL_CASE_DRAFT.address
+      draft.address !== INITIAL_CASE_DRAFT.address ||
+      this.selectedPhoto() !== null
     );
   });
 
@@ -68,6 +69,57 @@ export class CaseCreatePage {
 
   protected leaveWithoutSaving(): void {
     void this.router.navigate(['/']);
+  }
+
+  protected readonly photoError = signal<string | null>(null);
+
+  protected readonly selectedPhoto = signal<File | null>(null);
+
+  protected readonly photoPreviewUrl = signal<string | null>(null);
+
+  constructor() {
+    effect((onCleanup) => {
+      const file = this.selectedPhoto();
+      if (!file) {
+        this.photoPreviewUrl.set(null);
+        return;
+      }
+
+      // Локальный адрес для <img>; загрузки на сервер здесь нет.
+      const url = URL.createObjectURL(file);
+      this.photoPreviewUrl.set(url);
+
+      // Освобождаем адрес при замене файла или уничтожении компонента.
+      onCleanup(() => URL.revokeObjectURL(url));
+    });
+  }
+
+  protected selectPhoto(event: Event): void {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const file = input.files?.[0] ?? null;
+
+    this.photoError.set(null);
+    this.selectedPhoto.set(null);
+
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+
+    if (!allowedTypes.includes(file.type)) {
+      this.photoError.set('Выберите изображение JPEG, PNG или WebP.');
+      input.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      this.photoError.set('Размер фотографии не должен превышать 5 МиБ.');
+      input.value = '';
+      return;
+    }
+
+    this.selectedPhoto.set(file);
   }
 
   protected readonly caseForm = form(

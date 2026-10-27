@@ -328,6 +328,7 @@ legend {
 }
 .photo-attachment {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 18px;
   padding: 12px;
@@ -344,6 +345,33 @@ legend {
 }
 .photo-attachment strong {
   font-size: 17px;
+}
+.photo-attachment input[type='file'] {
+  flex: 1 1 240px;
+  min-width: 0;
+  max-width: 100%;
+}
+.photo-attachment p {
+  overflow-wrap: anywhere;
+}
+.photo-preview {
+  margin: 16px 0 0;
+  padding: 12px;
+  border: 1px solid #b5a17e;
+  border-radius: 3px;
+  background: #fff9eb;
+}
+.photo-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 320px;
+  object-fit: contain;
+}
+.photo-preview figcaption {
+  margin-top: 8px;
+  color: #494235;
+  font-size: 14px;
 }
 .form-actions {
   display: flex;
